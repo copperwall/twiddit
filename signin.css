@@ -35,10 +35,11 @@
     max-width: 280px;
     padding: 15px;
     margin: 0 auto;
-      margin-top:50px;
+    margin-top:50px;
   }
   .form-signin .form-signin-heading, .form-signin {
     margin-bottom: 10px;
+    align: center
   }
   .form-signin .form-control {
     position: relative;
