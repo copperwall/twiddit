@@ -4,15 +4,6 @@
    <title>PHP Test</title>
 </head>
 <body>
-
-<? foreach ($test as $stuff): ?>
-<p>
-   <strong><?= $stuff[0] ?></strong>
-   <em><?= $stuff[1] ?></em>
-</p>
-   
-<? endforeach ?>
-
 <? foreach ($comments as $comment): ?>
    <p><strong><?= $comment['author'] ?></strong></p>
    <p><em><?= $comment['created_utc'] ?></em></p>
