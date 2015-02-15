@@ -6,6 +6,26 @@ define('BASE_URL', 'http://reddit.com');
  * Wrapper class for reddit's API
  */
 class Reddit {
+   /**
+    * Grab the $limit hottest posts from $subreddit.
+    * 
+    * @param $subreddit - The name of a subreddit.
+    * @param $limit (optional) - The number of posts to grab.
+    */
+   public static function getSubredditPosts($subreddit, $limit = 5) {
+	   $items = [];
+	   
+     // Get content, parse into JSON, and add all chilren to items array
+	 $apiResult = file_get_contents(BASE_URL . "/r/$subreddit/hot.json?limit=$limit");
+	 $JSONresult = json_decode($apiResult, /* assoc */ true);
+	 $children = $JSONresult['data']['children'];
+
+	 foreach ($children as $child) {
+		array_push($items, $child['data']);
+	 }
+	 
+	 return $items;
+   }
    
    /**
     * Grab the most recent $limit comments from $users.
