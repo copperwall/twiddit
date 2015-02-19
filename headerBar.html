@@ -5,10 +5,7 @@
       <title>Twiddit</title>
       <!-- Latest compiled and minified CSS -->
       <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-      <!-- jQuery library -->
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-      <!-- Latest compiled JavaScript -->
-      <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+      <link rel="stylesheet" href="base.css">
 </head>
 
 <body>
@@ -28,8 +25,8 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-      <li class="active"><a href="#">People/Following<span class="sr-only">(current)</span></a></li>
-        <li><a href="#">Subreddits</a></li>
+      <li id="following_tab" class="active"><a href="#">People/Following<span class="sr-only">(current)</span></a></li>
+        <li id="subreddits_tab"><a href="#">Subreddits</a></li>
         <li><a href="#">Preferences</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -45,4 +42,20 @@
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
+<div id='following_feed' class='container'>
+   <h2 class='section_title'>Redditors You Follow</h2>
+   <div class='container section_body'></div>
+</div>
+<div id='subreddits_feed' class='container'>
+   <h2 class='section_title'>Subreddits You Follow</h2>
+   <div class='container section_body'></div>
+</div>
+
+<!-- Defer JS for last -->
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<!-- Latest compiled JavaScript -->
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<!-- Our view logic -->
+<script src='app.js'></script>
 </body>
