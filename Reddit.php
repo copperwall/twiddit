@@ -48,11 +48,19 @@ class Reddit {
    }
 
    private static function getItems(array $users, $limit, $type) {
+      $options = [
+        'http'=> [
+          'method'=>"GET",
+          'header'=> "User-Agent: twiddit:v0.1 (by /u/Zolokar)"
+        ]
+      ];
+
       $items = [];
+      $context = stream_context_create($options);
 
       // Get content, parse into JSON, and add all chilren to items array
       foreach ($users as $user) {
-         $apiResult = file_get_contents(BASE_URL . "/user/$user/$type.json?limit=$limit");
+         $apiResult = file_get_contents(BASE_URL . "/user/$user/$type.json?limit=$limit", false, $context);
          $JSONresult = json_decode($apiResult, /* assoc */ true);
          $children = $JSONresult['data']['children'];
 
