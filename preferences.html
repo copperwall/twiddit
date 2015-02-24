@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Bare - Start Bootstrap Template</title>
+    <title>Twiddit</title>
 
     <!-- Bootstrap Core CSS -->
  <!-- Latest compiled and minified CSS -->
@@ -46,14 +46,15 @@
 
         <div class="row">
             <div class="col-lg-12 text-center">
-                <h1>Preferences</h1>
-                <h3>People You Follow</h3>
-                <ul style="list-style: none;">
-                   <li>/u/kn0thing</li>
-                   <li>/u/RMS/Linux</li>
-                   <li>/u/IAMAPersonAMA</li>
-                </ul>
-                
+		<div style="width:275px; margin:0 auto;">
+                   <h1>Preferences</h1>
+                   <h3>People You Follow</h3>
+                   <ul id="following" style="list-style: none; text-align: left; margin:0 auto">
+                      <li>/u/kn0thing</li>
+                      <li>/u/RMS/Linux</li>
+                      <li>/u/IAMAPersonAMA</li>
+                   </ul>
+                </div>
                <form class="form-search">
                   <input type="text" class="input-medium" placeholder="Follow someone new">
                   <button type="submit" class="btn">Follow</button>
@@ -62,11 +63,12 @@
                </br>
                
                 <h3>Subreddits You Follow</h3>
-                   <label>r/funny</label><input type="range" name="slider-1" id="slider-1" value="5" min="0" max="10"/>
-                   <label>r/reaxtiongifs</label><input type="range" name="slider-1" id="slider-1" value="5" min="0" max="10" />
-                   <label>r/CalPoly</label><input type="range" name="slider-1" id="slider-1" value="5" min="0" max="10" />
-                
-               <form class="form-search">
+		   <div style="width:250px; margin:0 auto;">
+                      <label>r/funny</label><input type="range" name="slider-1" id="slider-1" value="5" min="0" max="10"/>
+                      <label>r/reaxtiongifs</label><input type="range" name="slider-1" id="slider-1" value="5" min="0" max="10" />
+                      <label>r/CalPoly</label><input type="range" name="slider-1" id="slider-1" value="5" min="0" max="10" />
+                  </div>
+	`	  <form class="form-search">
                   <input type="text" class="input-medium" placeholder="Follow a new subreddit">
                   <button type="submit" class="btn">Follow</button>
                </form>
