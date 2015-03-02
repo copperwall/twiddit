@@ -56,21 +56,21 @@
                    </ul>
                 </div>
                <form class="form-search">
-                  <input type="text" class="input-medium" placeholder="Follow someone new">
-                  <button type="submit" class="btn">Follow</button>
+                  <input id="uSearch" type="text" class="input-medium" placeholder="Follow someone new">
+                  <button id="uButton" type="submit" class="btn">Follow</button>
                </form>
                
                </br>
                
                 <h3>Subreddits You Follow</h3>
-		   <div style="width:250px; margin:0 auto;">
-                      <label>r/funny</label><input type="range" name="slider-1" id="slider-1" value="5" min="0" max="10"/>
-                      <label>r/reaxtiongifs</label><input type="range" name="slider-1" id="slider-1" value="5" min="0" max="10" />
-                      <label>r/CalPoly</label><input type="range" name="slider-1" id="slider-1" value="5" min="0" max="10" />
+		   <div id="subreddits" style="width:250px; margin:0 auto;">
+                      <label>r/funny</label><input type="range" name="slider-1" id="funny" value="5" min="0" max="10"/>
+                      <label>r/reaxtiongifs</label><input type="range" name="slider-1" id="reaxtiongifs" value="5" min="0" max="10" />
+                      <label>r/CalPoly</label><input type="range" name="slider-1" id="CalPoly" value="5" min="0" max="10" />
                   </div>
-	`	  <form class="form-search">
-                  <input type="text" class="input-medium" placeholder="Follow a new subreddit">
-                  <button type="submit" class="btn">Follow</button>
+		  <form class="form-search">
+                  <input id="rSearch" type="text" class="input-medium" placeholder="Follow a new subreddit">
+                  <button id="rButton" type="submit" class="btn">Follow</button>
                </form>
 
         </div>
@@ -84,6 +84,8 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
+    
+    <script src="preferences.js"></script>
 
 </body>
 
