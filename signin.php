@@ -14,12 +14,12 @@
    <body>
       <div class="container">
 
-	      <form class="form-signin" method="get" action="index.php">
+	      <form class="form-signin" method="post" action="index.php">
 		      <h1 class="form-signin-heading text-muted">Twiddit</h1>
-		      <input id="username" type="text" class="form-control" placeholder="Username" required="" autofocus="">
-		      <input id="password" type="password" class="form-control" placeholder="Password" required="">
-		      <button id="signUp" class="btn btn-lg btn-primary btn-block" type="submit" value="submit" onclick="doSignUp()">Sign Up</button>
-		      <button id="logIn" class="btn btn-lg btn-primary btn-block" type="submit" value="submit" onclick="doLogin()">Log In</button>
+		      <input id="username" name="username" type="text" class="form-control" placeholder="Username" required="" autofocus="">
+		      <input id="password" name="password" type="password" class="form-control" placeholder="Password" required="">
+		      <button id="signup" class="btn btn-lg btn-primary btn-block" type="submit" formmethod="post" formaction="signup">Sign Up</button>
+		      <button id="logIn" class="btn btn-lg btn-primary btn-block" formmethod="post" type="submit" formaction="login">Log In</button>
 	      </form>
       </div>
    </body>

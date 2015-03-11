@@ -18,7 +18,7 @@ $app->get('/', function() use ($app) {
 });
 
 $app->get('/signin', function()  use ($app) {
-   include 'signin.html';
+   include 'signin.php';
 });
 
 $app->get('/feed', function() use ($app) {
@@ -44,16 +44,48 @@ $app->get('/reddit_callback', function() use ($app) {
 $app->post('/login', function() use ($app, $db) {
    $username = $app->request->post('username');
    $password = $app->request->post('password');
-
+    
    $query = "SELECT * FROM  users where userName='$username' and userPassword='$password'";
 
-    $result = $db->query($query);
+   if ($db == null) {
+      echo 'hi your db is null';
+   }
+   $result = $db->query($query);
 
-    if (empty($query)) {
-        echo 'FAILURE';
-    } else {
-       $app->redirect('/');
-    }
+   if($result->rowCount() == 0) {
+     echo 'FAILURE';
+   } else {
+     $app->redirect('/');
+   }
+});
+
+
+$app->post('/signup', function() use ($app, $db) {
+   echo 'wutwut';
+   $username = $app->request->post('username');
+   $password = $app->request->post('password');
+
+   $query = "SELECT * FROM  users where userName='$username'";
+   echo $query;
+   $result = $db->query($query);
+   
+   if ($result->rowCount() > 0) {
+     // set error msg param "user already exists or something"
+   } else {
+     $insert = "INSERT INTO users values('$username', '$password')";
+     $result = $db->exec($insert);
+     // set success message "user created"
+   }
+   
+   $app->redirect('/signin');
+});
+
+$app->get('/app.js', function() use ($app) {
+   echo file_get_contents('app.js');
+});
+
+$app->get('/base.css', function() use ($app) {
+   echo file_get_contents('base.css');
 });
 
 $app->run();
