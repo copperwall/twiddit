@@ -25,3 +25,8 @@
 .section_title {
    margin-bottom: 20px;
 }
+
+/* Subreddit self and comment text */
+.md {
+   padding-top: 20px;
+}

@@ -45,7 +45,7 @@ function commentToHTML(post) {
 
 function subToHTML(post) {
    var container = $("<div class='comment_blurb'></div>");
-   var title = $("<h4 class='title'>" + post.title + "</h4>");
+   var title = $("<a href='" + post.url + "'><h4 class='title'>" + post.title + "</h4></a>");
    var author = $("<span class='author lead'>by " + post.author + "</span>");
    var subreddit = $("<span class='subreddit text-muted'>in r/" + post.subreddit + "</span>");
    // The jQuery madness happening here is to decode html entities
