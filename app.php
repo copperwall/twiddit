@@ -15,7 +15,8 @@ $app = new \Slim\Slim();
 
 $app->get('/', function() use ($app) {
    if(!isset($_COOKIE['user'])) {
-      include 'signin.php';
+      $loginpage = new View('signin.php');
+      $loginpage->render();
    } else {
       include ('headerBar.html');
    }
@@ -57,7 +58,9 @@ $app->post('/login', function() use ($app, $db) {
    $result = $db->query($query);
 
    if($result->rowCount() == 0) {
-     echo 'FAILURE';
+      $failpage = new View('signin.php');
+      $failpage->addPageVariable('failure', true);
+      $failpage->render();
    } else {
      $cookie_name = 'user';
      $cookie_value = $username;

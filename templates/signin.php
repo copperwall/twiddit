@@ -18,9 +18,12 @@
 		      <h1 class="form-signin-heading text-muted">Twiddit</h1>
 		      <input id="username" name="username" type="text" class="form-control" placeholder="Username" required="" autofocus="">
 		      <input id="password" name="password" type="password" class="form-control" placeholder="Password" required="">
-		      <button id="signup" class="btn btn-lg btn-primary btn-block" type="submit" formmethod="post" formaction="signup">Sign Up</button>
 		      <button id="logIn" class="btn btn-lg btn-primary btn-block" formmethod="post" type="submit" formaction="login">Log In</button>
+		      <button id="signup" class="btn btn-lg btn-primary btn-block" type="submit" formmethod="post" formaction="signup">Sign Up</button>
 	      </form>
+      <?php if (isset($failure)): ?>
+         <p class='bg-danger'>Invalid Username or Password</p>
+      <?php endif; ?>
       </div>
    </body>
 </html>
