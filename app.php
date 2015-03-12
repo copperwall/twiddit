@@ -1,8 +1,11 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 
-require 'connect.inc.php';
+// Composer
 require 'vendor/autoload.php';
+
+// Our libs
+require_once('TwidditDB.php');
 require_once('Reddit.php');
 require_once('View.php');
 
@@ -46,7 +49,8 @@ $app->get('/reddit_callback', function() use ($app) {
    echo $req->get('code');
 });
 
-$app->post('/login', function() use ($app, $db) {
+$app->post('/login', function() use ($app) {
+   $db = TwidditDB::db();
    $username = $app->request->post('username');
    $password = $app->request->post('password');
     
@@ -70,7 +74,8 @@ $app->post('/login', function() use ($app, $db) {
 });
 
 
-$app->post('/signup', function() use ($app, $db) {
+$app->post('/signup', function() use ($app) {
+   $db = TwidditDB::db();
    $username = $app->request->post('username');
    $password = $app->request->post('password');
 

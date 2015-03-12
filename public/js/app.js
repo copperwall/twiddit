@@ -2,21 +2,37 @@
 
 var posts = {};
 var url = 'http://twiddit.ddns.net:2000';
+// Name of users that are being followed and name of subreddits being followed
+var users = [], subreddits = [];
 
 $('#following_tab').click(function() {
    $('#following_tab').addClass('active');
    $('#subreddits_tab').removeClass('active');
+   $('#preferences_tab').removeClass('active');
 
    $('#following_feed').show();
+   $('#preferences_page').hide();
    $('#subreddits_feed').hide();
 });
 
 $('#subreddits_tab').click(function() {
    $('#subreddits_tab').addClass('active');
    $('#following_tab').removeClass('active');
+   $('#preferences_tab').removeClass('active');
 
    $('#subreddits_feed').show();
+   $('#preferences_page').hide();
    $('#following_feed').hide();
+});
+
+$('#preferences_tab').click(function() {
+   $('#preferences_tab').addClass('active');
+   $('#following_tab').removeClass('active');
+   $('#subreddits_tab').removeClass('active');
+
+   $('#preferences_page').show();
+   $('#following_feed').hide();
+   $('#subreddits_feed').hide();
 });
 
 $.getJSON(url + '/feed').done(function(posts){
@@ -29,6 +45,18 @@ $.getJSON(url + '/feed').done(function(posts){
 $.getJSON(url + '/subreddits').done(function(posts){
    posts.forEach(function(post) {
       $('#subreddits_feed .section_body').append(subToHTML(post));
+   });
+});
+
+$.getJSON(url + '/settings').done(function(settings){
+   users = settings.following;
+   subreddits = settings.subreddits;
+   
+   users.forEach(function(user) {
+      addFollowUser(user);
+   });
+   subreddits.forEach(function(subreddit) {
+      addSubredditSlider(subreddit);
    });
 });
 
@@ -53,3 +81,53 @@ function subToHTML(post) {
 
    return container.append([title, author, subreddit, body]);
 };
+
+// Preferences functions
+var min = "0", max = "10", defaultVal = "5";
+
+function getSubredditValue(subredditName) {
+   return $("#" + subredditName).val();
+}
+
+function addSubredditSlider(subredditName) {
+   var slider = $("<input>").attr("type", "range")
+                            .attr("name", "slider-1")
+                            .attr("id", subredditName)
+                            .attr("value", defaultVal)
+                            .attr("min", min)
+                            .attr("max", max);
+   $("#subreddits").append("<label>r/" + subredditName + "</label>")
+                   .append(slider);
+}
+
+function addFollowUser(user) {
+   $("#following").append("<li>/u/" + user + "</li>")
+}
+
+$("#uButton").click(function() {
+   var newUser = $("#uSearch").val(), alreadyAdded = false;
+   for (i=0; i < users.length; i++) {
+      alreadyAdded = users[i] == newUser;
+   }
+   if (alreadyAdded) {
+      users[users.length] = newUser;
+      //TODO:Add to database
+      addFollowUser(newUser);
+   }
+});
+   
+$("#rButton").click(function() {
+   var newSubreddit = $("#rSearch").val(), alreadyAdded = false;
+   for (i=0; i < users.length; i++) {
+      alreadyAdded = users[i] == newUser;
+   }
+   if (alreadyAdded) {
+      subreddits[subreddits.length] = newSubreddit;
+      //TODO:Add to database
+      if (newSubreddit != "") {
+         addSubredditSlider(newSubreddit);
+      }
+   }
+});
+
+

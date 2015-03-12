@@ -27,7 +27,7 @@
          <ul class="nav navbar-nav">
          <li id="following_tab" class="active"><a href="#">People/Following<span class="sr-only">(current)</span></a></li>
            <li id="subreddits_tab"><a href="#">Subreddits</a></li>
-           <li><a href="#">Preferences</a></li>
+           <li id="preferences_tab"><a href="#">Preferences</a></li>
          </ul>
          <ul class="nav navbar-nav navbar-right">
            <li class="dropdown">
@@ -50,6 +50,36 @@
       <h2 class='section_title'>Subreddits You Follow</h2>
       <div class='container section_body'></div>
    </div>
+   
+   <div id='preferences_page' class="container">
+
+        <div class="row">
+            <div class="col-lg-12 text-center">
+		<div style="width:275px; margin:0 auto;">
+                   <h1>Preferences</h1>
+                   <h3>People You Follow</h3>
+                   <ul id="following" style="list-style: none; text-align: left; margin:0 auto">
+                   </ul>
+                </div>
+               <form class="form-search">
+                  <input id="uSearch" type="text" class="input-medium" placeholder="Follow someone new">
+                  <button id="uButton" type="submit" class="btn">Follow</button>
+               </form>
+               
+               </br>
+               
+                <h3>Subreddits You Follow</h3>
+		   <div id="subreddits" style="width:250px; margin:0 auto;">
+                  </div>
+		  <form class="form-search">
+                  <input id="rSearch" type="text" class="input-medium" placeholder="Follow a new subreddit">
+                  <button id="rButton" type="submit" class="btn">Follow</button>
+               </form>
+
+        </div>
+        <!-- /.row -->
+
+    </div>
 
    <!-- Defer JS for last -->
    <!-- jQuery library -->
