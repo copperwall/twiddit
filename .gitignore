@@ -1,2 +1,6 @@
 # No swap files
 *.swp
+*.swo
+
+# Ignore composer packages
+vendor/
