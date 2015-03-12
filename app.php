@@ -71,23 +71,23 @@ $app->post('/login', function() use ($app, $db) {
 
 
 $app->post('/signup', function() use ($app, $db) {
-   echo 'wutwut';
    $username = $app->request->post('username');
    $password = $app->request->post('password');
 
    $query = "SELECT * FROM  users where userName='$username'";
-   echo $query;
    $result = $db->query($query);
    
    if ($result->rowCount() > 0) {
-     // set error msg param "user already exists or something"
+     $failpage = new View('signin.php');
+     $failpage->addPageVariable('signupfail', true);
+     $failpage->render();
    } else {
      $insert = "INSERT INTO users values('$username', '$password')";
      $result = $db->exec($insert);
-     // set success message "user created"
+     $successpage = new View('signin.php');
+     $successpage->addPageVariable('signupsuccess', true);
+     $successpage->render(); 
    }
-   
-   $app->redirect('/signin');
 });
 
 $app->get('/app.js', function() use ($app) {

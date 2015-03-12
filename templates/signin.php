@@ -24,6 +24,12 @@
       <?php if (isset($failure)): ?>
          <p class='bg-danger'>Invalid Username or Password</p>
       <?php endif; ?>
+      <?php if (isset($signupfail)): ?>
+         <p class='bg-danger'>User already exists</p>
+      <?php endif; ?>
+      <?php if (isset($signupsuccess)): ?>
+         <p class='bg-success'>Account Created</p>
+      <?php endif; ?>
       </div>
    </body>
 </html>
