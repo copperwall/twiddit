@@ -14,7 +14,11 @@ if (stristr($_SERVER['REQUEST_URI'], 'public')) {
 $app = new \Slim\Slim();
 
 $app->get('/', function() use ($app) {
-   include ('headerBar.html');
+   if(!isset($_COOKIE['user'])) {
+      include 'signin.php';
+   } else {
+      include ('headerBar.html');
+   }
 });
 
 $app->get('/signin', function()  use ($app) {
@@ -55,6 +59,9 @@ $app->post('/login', function() use ($app, $db) {
    if($result->rowCount() == 0) {
      echo 'FAILURE';
    } else {
+     $cookie_name = 'user';
+     $cookie_value = $username;
+     setcookie($cookie_name, $cookie_value, time() + 60); // cookie lasts 60 secs
      $app->redirect('/');
    }
 });
