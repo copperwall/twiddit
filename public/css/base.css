@@ -22,6 +22,11 @@
    margin-bottom: 30px;
 }
 
+#preferences_page {
+   display: none;
+   margin-bottom: 30px;
+}
+
 .section_title {
    margin-bottom: 20px;
 }
