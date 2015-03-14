@@ -1,6 +1,7 @@
 create table users(
 userName varchar(30) not null,
 userPassword varchar(30) not null,
+redditToken varchar(1000) default null,
 primary key(userName)
 );
 
