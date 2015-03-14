@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
    <head>
-      <link rel="stylesheet" href="signin.css">
+      <link rel="stylesheet" href="/public/css/signin.css">
       <div id="fullscreen_bg" class="fullscreen_bg"/>
       <title>Twiddit</title>
        <!-- Latest compiled and minified CSS -->
