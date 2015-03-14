@@ -18,15 +18,17 @@ $app = new \Slim\Slim();
 
 $app->get('/', function() use ($app) {
    if(!isset($_COOKIE['user'])) {
-      $loginpage = new View('signin.php');
+      $loginpage = new View('signin.phtml');
       $loginpage->render();
    } else {
-      include ('headerBar.html');
+      $mainpage = new View('main.phtml');
+      $mainpage->render();
    }
 });
 
 $app->get('/signin', function()  use ($app) {
-   include 'signin.php';
+   $signinpage = new View('signin.phtml');
+   $signinpage->render();
 });
 
 $app->get('/feed', function() use ($app) {
@@ -62,7 +64,7 @@ $app->post('/login', function() use ($app) {
    $result = $db->query($query);
 
    if($result->rowCount() == 0) {
-      $failpage = new View('signin.php');
+      $failpage = new View('signin.phtml');
       $failpage->addPageVariable('failure', true);
       $failpage->render();
    } else {
