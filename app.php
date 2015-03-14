@@ -97,12 +97,4 @@ $app->post('/signup', function() use ($app) {
    }
 });
 
-$app->get('/app.js', function() use ($app) {
-   echo file_get_contents('app.js');
-});
-
-$app->get('/base.css', function() use ($app) {
-   echo file_get_contents('base.css');
-});
-
 $app->run();
