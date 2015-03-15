@@ -93,9 +93,12 @@ function addSubredditSlider(subredditName) {
    var slider = $("<input>").attr("type", "range")
                             .attr("name", "slider-1")
                             .attr("id", subredditName)
-                            .attr("value", defaultVal)
+                            .attr("value", defaultVal) // get from database
                             .attr("min", min)
                             .attr("max", max);
+   slider.addEventListener("mouseup", function () {
+        // add to database
+   });
    $("#subreddits").append("<label>r/" + subredditName + "</label>")
                    .append(slider);
 }
@@ -106,10 +109,10 @@ function addFollowUser(user) {
 
 $("#uButton").click(function() {
    var newUser = $("#uSearch").val(), alreadyAdded = false;
-   for (i=0; i < users.length; i++) {
+   for (i=0; i < users.length && !alreadyAdded; i++) {
       alreadyAdded = users[i] == newUser;
    }
-   if (alreadyAdded) {
+   if (!alreadyAdded) {
       users[users.length] = newUser;
       //TODO:Add to database
       addFollowUser(newUser);
@@ -118,10 +121,10 @@ $("#uButton").click(function() {
    
 $("#rButton").click(function() {
    var newSubreddit = $("#rSearch").val(), alreadyAdded = false;
-   for (i=0; i < users.length; i++) {
+   for (i=0; i < users.length && !alreadyAdded; i++) {
       alreadyAdded = users[i] == newUser;
    }
-   if (alreadyAdded) {
+   if (!alreadyAdded) {
       subreddits[subreddits.length] = newSubreddit;
       //TODO:Add to database
       if (newSubreddit != "") {

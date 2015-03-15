@@ -15,6 +15,7 @@ foreign key(userName) references users(userName)
 create table followingSubreddit(
 userName varchar(30) not null,
 subreddit varchar(30) not null,
+preferenceValue int default 5,
 primary key(userName, subreddit),
 foreign key(userName) references users(userName)
 );
