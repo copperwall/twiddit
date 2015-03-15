@@ -8,6 +8,7 @@ require 'vendor/autoload.php';
 require_once('TwidditDB.php');
 require_once('Reddit.php');
 require_once('View.php');
+require_once('Auth.php');
 
 // If request is for the public directory, serve static file (for js/css)
 if (stristr($_SERVER['REQUEST_URI'], 'public')) {
@@ -65,9 +66,19 @@ $app->get('/subreddits', function() use ($app) {
 
 $app->get('/reddit_callback', function() use ($app) {
    $req = $app->request();
-   echo "Reddit time\n";
-   echo $req->get('state') . "\n";
-   echo $req->get('code');
+   $state = $req->get('state');
+   $code = $req->get('code');
+   $response = Auth::getTokenFromAuthCode($code, $state);
+
+   if (array_key_exists('error', $response)) {
+      // Do error thing
+      echo "OAuth Error: {$response['error']}";
+      die();
+   }
+
+   Auth::setUserToken($response['access_token'], $response['refresh_token'],
+    $response['expires_in']);
+   $app->redirect('/');
 });
 
 $app->post('/login', function() use ($app) {
