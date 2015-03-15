@@ -37,10 +37,17 @@ $app->get('/signin', function()  use ($app) {
 $app->get('/feed', function() use ($app) {
    $db = TwidditDB::db();
    $username = $_COOKIE['user'];
-   $query = "select redditor 
-            from followingRedditors 
-            where '$username' = userName";
-   $result = $db->query($query);
+   $query = <<<EOT
+      SELECT `redditor`
+      FROM `followingRedditors`
+      WHERE `userName` = :username
+EOT;
+
+   $statement = $db->prepare($query);
+   $statement->bindParam(':username', $username);
+   $statement->execute();
+   $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
    $users = [];
    foreach ($result as $row) {
       $users[] = $row['redditor'];
@@ -50,18 +57,26 @@ $app->get('/feed', function() use ($app) {
 
    echo json_encode($comments);
 });
+
 $app->get('/subreddits', function() use ($app) {
    $db = TwidditDB::db();
    $username = $_COOKIE['user'];
-   $query = "select subreddit 
-            from followingSubreddit 
-            where '$username' = userName";
-   $result = $db->query($query);
-   $subreddit = [];
-   foreach ($result as $row) {
-      $subreddit[] = $row['subreddit'];
+   $query = <<<EOT
+      SELECT `subreddit`
+      FROM `followingSubreddit`
+      WHERE `userName` = :username
+EOT;
+
+   $statement = $db->prepare($query);
+   $statement->bindParam(':username', $username);
+   $statement->execute();
+   $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+   $subreddits = [];
+   foreach ($results as $row) {
+      $subreddits[] = $row['subreddit'];
    }
-   $data = Reddit::getSubredditPosts($subreddit);
+   $data = Reddit::getSubredditPosts($subreddits);
 
    echo json_encode($data);
 });
@@ -106,7 +121,6 @@ $app->post('/login', function() use ($app) {
      $app->redirect('/');
    }
 });
-
 
 $app->post('/signup', function() use ($app) {
    $db = TwidditDB::db();
