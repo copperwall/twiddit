@@ -32,23 +32,32 @@ $app->get('/signin', function()  use ($app) {
 });
 
 $app->get('/feed', function() use ($app) {
+   $db = TwidditDB::db();
    $username = $_COOKIE['user'];
    $query = "select redditor 
             from followingRedditors 
-            where '$username' = userName;"
-   
+            where '$username' = userName";
    $result = $db->query($query);
-   for ($result as $row) {
-      echo $row['redditor'];
+   $users = [];
+   foreach ($result as $row) {
+      $users[] = $row['redditor'];
    }
    
-   $users = ['kn0thing', 'zolokar', 'xiongchiamiov'];
    $comments = Reddit::getComments($users);
 
    echo json_encode($comments);
 });
 $app->get('/subreddits', function() use ($app) {
-   $subreddit = ['python', 'slo', 'calpoly'];
+   $db = TwidditDB::db();
+   $username = $_COOKIE['user'];
+   $query = "select subreddit 
+            from followingSubreddit 
+            where '$username' = userName";
+   $result = $db->query($query);
+   $subreddit = [];
+   foreach ($result as $row) {
+      $subreddit[] = $row['subreddit'];
+   }
    $data = Reddit::getSubredditPosts($subreddit);
 
    echo json_encode($data);
@@ -80,7 +89,7 @@ $app->post('/login', function() use ($app) {
    } else {
      $cookie_name = 'user';
      $cookie_value = $username;
-     setcookie($cookie_name, $cookie_value, time() + 60); // cookie lasts 60 secs
+     setcookie($cookie_name, $cookie_value, time() + 36000); // cookie lasts 60 secs
      $app->redirect('/');
    }
 });
