@@ -32,6 +32,16 @@ $app->get('/signin', function()  use ($app) {
 });
 
 $app->get('/feed', function() use ($app) {
+   $username = $_COOKIE['user'];
+   $query = "select redditor 
+            from followingRedditors 
+            where '$username' = userName;"
+   
+   $result = $db->query($query);
+   for ($result as $row) {
+      echo $row['redditor'];
+   }
+   
    $users = ['kn0thing', 'zolokar', 'xiongchiamiov'];
    $comments = Reddit::getComments($users);
 
