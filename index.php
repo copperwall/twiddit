@@ -23,6 +23,8 @@ $app->get('/', function() use ($app) {
       $loginpage->render();
    } else {
       $mainpage = new View('main.phtml');
+      $oauthUrl = Auth::buildOAuthRedirectUrl();
+      $mainpage->addPageVariable('oauthUrl', $oauthUrl);
       $mainpage->render();
    }
 });
