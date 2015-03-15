@@ -65,7 +65,14 @@ class Reddit {
             $url_path = "/user/$source/$type.json?limit=$limit";
          }
 
-         $apiResult = file_get_contents(BASE_URL . $url_path, false, $context);
+         $apiResult = null;
+
+         try {
+            $apiResult = file_get_contents(BASE_URL . $url_path, false, $context);
+         } catch (ErrorException $e) {
+            // Shhh no tears, only sleep
+            continue;
+         }
          $JSONresult = json_decode($apiResult, /* assoc */ true);
          $children = $JSONresult['data']['children'];
 
