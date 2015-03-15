@@ -48,7 +48,7 @@ $app->get('/feed', function() use ($app) {
    echo json_encode($comments);
 });
 $app->get('/subreddits', function() use ($app) {
-   $subreddit = 'python';
+   $subreddit = ['python', 'slo', 'calpoly'];
    $data = Reddit::getSubredditPosts($subreddit);
 
    echo json_encode($data);

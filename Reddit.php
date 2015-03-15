@@ -9,22 +9,11 @@ class Reddit {
    /**
     * Grab the $limit hottest posts from $subreddit.
     * 
-    * @param $subreddit - The name of a subreddit.
+    * @param $subreddits - An array of subreddit names.
     * @param $limit (optional) - The number of posts to grab.
     */
-   public static function getSubredditPosts($subreddit, $limit = 5) {
-	   $items = [];
-	   
-     // Get content, parse into JSON, and add all chilren to items array
-	 $apiResult = file_get_contents(BASE_URL . "/r/$subreddit/hot.json?limit=$limit");
-	 $JSONresult = json_decode($apiResult, /* assoc */ true);
-	 $children = $JSONresult['data']['children'];
-
-	 foreach ($children as $child) {
-		array_push($items, $child['data']);
-	 }
-	 
-	 return $items;
+   public static function getSubredditPosts(array $subreddits, $limit = 5) {
+      return self::getItems($subreddits, $limit, 'subreddit');
    }
    
    /**
@@ -47,7 +36,15 @@ class Reddit {
       return self::getItems($users, $limit, 'submitted');
    }
 
-   private static function getItems(array $users, $limit, $type) {
+   /**
+    * A private helper function to grab a list of subreddits, comments, or
+    * submissions.
+    *
+    * @param $sources - An array of sources (comments, submissions, subreddits).
+    * @param $limit - The number of items to grab from each source.
+    * @param $type - Enum ('subreddit', 'comments', 'submitted')
+    */
+   private static function getItems(array $sources, $limit, $type) {
       $options = [
         'http'=> [
           'method'=>"GET",
@@ -58,9 +55,17 @@ class Reddit {
       $items = [];
       $context = stream_context_create($options);
 
+
       // Get content, parse into JSON, and add all chilren to items array
-      foreach ($users as $user) {
-         $apiResult = file_get_contents(BASE_URL . "/user/$user/$type.json?limit=$limit", false, $context);
+      foreach ($sources as $source) {
+         // Determine the URL path based on what source are grabbing data from.
+         if ($type === 'subreddit') {
+            $url_path = "/r/$source/hot.json?limit=$limit";
+         } else {
+            $url_path = "/user/$source/$type.json?limit=$limit";
+         }
+
+         $apiResult = file_get_contents(BASE_URL . $url_path, false, $context);
          $JSONresult = json_decode($apiResult, /* assoc */ true);
          $children = $JSONresult['data']['children'];
 
