@@ -5,6 +5,11 @@ var url = 'http://twiddit.ddns.net:2000';
 // Name of users that are being followed and name of subreddits being followed
 var users = [], subreddits = [];
 
+$('#logout').click(function() {
+   document.cookie = 'user=; expires=Thu, 01 Jan 1970 00:00:00 UTC';
+   window.location = '/';
+});
+
 $('#following_tab').click(function() {
    $('#following_tab').addClass('active');
    $('#subreddits_tab').removeClass('active');
