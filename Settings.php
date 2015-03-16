@@ -39,7 +39,7 @@ EOT;
 
       $query = <<<EOT
          SELECT `subreddit`, `preferenceValue`
-         FROM `followingRedditors`
+         FROM `followingSubreddit`
          WHERE `userName` = :username
 EOT;
 

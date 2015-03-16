@@ -7,6 +7,7 @@ require 'vendor/autoload.php';
 // Our libs
 require_once('TwidditDB.php');
 require_once('Reddit.php');
+require_once('Settings.php');
 require_once('View.php');
 require_once('Auth.php');
 
@@ -141,6 +142,40 @@ $app->post('/signup', function() use ($app) {
      $successpage->addPageVariable('signupsuccess', true);
      $successpage->render(); 
    }
+});
+
+// Return a settings object with a following and subreddits array
+$app->get('/settings', function() use ($app) {
+   $following = Settings::getFollowing();
+   $subreddits = Settings::getSubreddits();
+
+   $response = [
+      'following' => $following,
+      'subreddits' => $subreddits
+   ];
+
+   echo json_encode($response);
+});
+
+$app->post('/settings/following', function() use ($app) {
+   $redditor = $app->request()->getBody();
+
+   Settings::addFollowing($redditor);
+
+   // Return the JSON text of the user's following settings.
+   $settings = Settings::getFollowing();
+   echo json_encode($settings);
+});
+
+$app->post('/settings/subreddits', function() use ($app) {
+   $body = $app->request()->getBody();
+   $data = json_decode($body, /* assoc */ true);
+
+   Settings::addSubreddit($data['subreddit'], $data['preferenceValue']);
+
+   // Return the JSON text of the user's subreddit settings.
+   $settings = Settings::getSubreddits();
+   echo json_encode($settings);
 });
 
 $app->run();
