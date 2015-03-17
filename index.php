@@ -26,6 +26,7 @@ $app->get('/', function() use ($app) {
       $mainpage = new View('main.phtml');
       $oauthUrl = Auth::buildOAuthRedirectUrl();
       $mainpage->addPageVariable('oauthUrl', $oauthUrl);
+      $mainpage->addPageVariable('user', $_COOKIE['user']);
       $mainpage->render();
    }
 });
