@@ -35,3 +35,10 @@
 .md {
    padding-top: 20px;
 }
+
+#loading_area {
+   height:200px;
+   width:400px;
+   margin: 200px auto;
+   text-align: center;
+}

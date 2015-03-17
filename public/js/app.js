@@ -40,20 +40,23 @@ $('#preferences_tab').click(function() {
    $('#subreddits_feed').hide();
 });
 
-$.getJSON(url + '/feed').done(function(posts){
+var feedRequest = $.getJSON(url + '/feed');
+var settingsRequest = $.getJSON(url + '/settings');
+var subredditRequest = $.getJSON(url + '/subreddits');
+
+feedRequest.done(function(posts){
    posts.forEach(function(post) {
       $('#following_feed .section_body').append(commentToHTML(post));
    });
-   $('#following_feed').show();
 });
 
-$.getJSON(url + '/subreddits').done(function(posts){
+subredditRequest.done(function(posts){
    posts.forEach(function(post) {
       $('#subreddits_feed .section_body').append(subToHTML(post));
    });
 });
 
-$.getJSON(url + '/settings').done(function(settings){
+settingsRequest.done(function(settings){
    users = settings.following;
    subreddits = settings.subreddits;
    
@@ -63,6 +66,13 @@ $.getJSON(url + '/settings').done(function(settings){
    subreddits.forEach(function(subreddit) {
       addSubredditSlider(subreddit);
    });
+});
+
+// After all three requests finish loading, hide the loading div and show the
+// preferences one.
+$.when.apply($, [feedRequest, subredditRequest, settingsRequest]).done(function() {
+   $('#loading_area').hide();
+   $('#following_feed').show();
 });
 
 function commentToHTML(post) {
