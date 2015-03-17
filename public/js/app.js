@@ -81,11 +81,11 @@ function commentToHTML(post) {
    var author = $("<span class='author lead'>by " + post.author + "</span>");
    // var author = $("<h4 class='lead'>" + post.author + "</h4>");
    var subreddit = $("<span class='subreddit text-muted'>in r/" + post.subreddit + "</span>");
+   var favoriteIcon = $("<span class=\"favorite glyphicon glyphicon-star-empty\" aria-hidden=\"true\" data-name=\"" + post.name + "\"></span>");
    // The jQuery madness happening here is to decode html entities
    var body = $('<p class="comment_body"></p>').html(post.body_html).text();
-   var favoriteIcon = $("<span class=\"favorite glyphicon glyphicon-star-empty\" aria-hidden=\"true\" data-name=\"" + post.name + "\"></span>");
 
-   return container.append([author, subreddit, body, favoriteIcon]);
+   return container.append([author, subreddit, favoriteIcon, body]);
 };
 
 function subToHTML(post) {

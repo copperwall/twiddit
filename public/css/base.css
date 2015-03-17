@@ -42,9 +42,10 @@
    text-align: center;
 }
 
-.glyphicon-star-empty, .glyphicon-star {
-   font-size: 18px;
+.favorite {
+   font-size: 22px;
    cursor: pointer;
+   float: right;
 }
 
 .glyphicon-star-empty {
