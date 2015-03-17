@@ -50,7 +50,10 @@ EOT;
 
       $subreddits = [];
       foreach ($results as $row) {
-         $subreddits[] = [$row['subreddit'] => $row['preferenceValue']];
+         $subreddits[] = [
+            'subreddit' => $row['subreddit'],
+            'preferenceValue' => $row['preferenceValue']
+         ];
       }
       return $subreddits;
    }

@@ -129,7 +129,7 @@ $("#uButton").click(function() {
    }
    if (!alreadyAdded) {
       users[users.length] = newUser;
-      //TODO:Add to database
+      var request = $.post('/settings/following', newUser);
       addFollowUser(newUser);
    }
 });
