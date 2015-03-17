@@ -37,6 +37,25 @@ class Reddit {
    }
 
    /**
+    * Favorite a post using Reddit's API.
+    */
+   public static function favorite($id) {
+      $token = Auth::getToken();
+      $opts = [
+         'http' => [
+            'method' => 'POST',
+            'header' => "Authorization: bearer $token"
+            . "\r\nContent-type: application/x-www-form-urlencoded"
+            . "\r\nUser-Agent: twiddit:v0.1 (by /u/Zolokar)",
+            'content' => "id=$id"
+         ]
+      ];
+
+      $context = stream_context_create($opts);
+      file_get_contents('https://oauth.reddit.com/api/save', false, $context);
+   }
+
+   /**
     * A private helper function to grab a list of subreddits, comments, or
     * submissions.
     *

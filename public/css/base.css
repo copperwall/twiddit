@@ -2,7 +2,7 @@
 .comment_blurb {
    margin-top: 20px;
    border-left: 4px solid #558CCC;
-   padding: 20px;
+   padding: 20px 20px 8px;
    max-width: 600px;
    box-shadow: 1px 1px 0.5px grey, 0px -0.5px 0.5px grey;
 }
@@ -40,4 +40,17 @@
    width:400px;
    margin: 200px auto;
    text-align: center;
+}
+
+.glyphicon-star-empty, .glyphicon-star {
+   font-size: 18px;
+   cursor: pointer;
+}
+
+.glyphicon-star-empty {
+   color: grey;
+}
+
+.glyphicon-star {
+   color: gold;
 }

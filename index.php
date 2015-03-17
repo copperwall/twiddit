@@ -179,4 +179,10 @@ $app->post('/settings/subreddits', function() use ($app) {
    echo json_encode($settings);
 });
 
+$app->post('/favorite', function() use ($app) {
+   $JSONBody = $app->request()->getBody();
+   $data = json_decode($JSONBody, /* assoc */ true);
+   Reddit::favorite($data['id']);
+});
+
 $app->run();
