@@ -1,11 +1,10 @@
 /* Base CSS rules */
 .comment_blurb {
    margin-top: 20px;
-   border-bottom: 0.7px solid #ccc;
-}
-
-.comment_blurb:last-of-type {
-   border-bottom: none;
+   border-left: 4px solid #558CCC;
+   padding: 20px;
+   max-width: 600px;
+   box-shadow: 1px 1px 0.5px grey, 0px -0.5px 0.5px grey;
 }
 
 .author {
