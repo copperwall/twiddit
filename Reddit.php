@@ -56,6 +56,24 @@ class Reddit {
    }
 
    /**
+    * Send message using Reddit's API.
+    */
+   public static function message($to, $subject, $text) {
+      $token = Auth::getToken();
+      $opts = [
+         'http' => [
+            'method' => 'POST',
+            'header' => "Authorization: bearer $token"
+            . "\r\nContent-type: application/x-www-form-urlencoded"
+            . "\r\nUser-Agent: twiddit:v0.1 (by /u/Zolokar)",
+            'content' => "to=$to&subject=$subject&text=$text"
+         ]
+      ];
+      $context = stream_context_create($opts);
+      file_get_contents('https://oauth.reddit.com/api/compose', false, $context);
+   }
+
+   /**
     * A private helper function to grab a list of subreddits, comments, or
     * submissions.
     *

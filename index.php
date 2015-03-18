@@ -195,4 +195,10 @@ $app->post('/favorite', function() use ($app) {
    Reddit::favorite($data['id']);
 });
 
+$app->post('/message', function() use ($app) {
+   $JSONBody = $app->request()->getBody();
+   $data = json_decode($JSONBody, true);
+   Reddit::message($data['to'],$data['subject'],$data['text']);
+}
+
 $app->run();
