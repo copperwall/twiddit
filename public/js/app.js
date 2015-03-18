@@ -175,12 +175,12 @@ function sendMessage() {
    // Grab subject
    var subject = $("#message_subject").val();
    // Grab message
-   var body = $("#message_body").val();
+   var text = $("#message_body").val();
 
    var data = {
-      recipient: recipient,
+      to: recipient,
       subject: subject,
-      body: body
+      text: text
    }
 
    // Send off to backend
