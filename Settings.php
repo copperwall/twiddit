@@ -85,15 +85,46 @@ EOT;
       $db = TwidditDB::db();
 
       $query = <<<EOT
-         INSERT INTO `followingSubreddit`
-         (`userName`, `subreddit`, `preferenceValue`)
-         VALUES (:username, :subreddit, :preferenceValue)
+         SELECT * FROM `followingSubreddit`
+         WHERE `userName` = :username AND 
+               `subreddit` = :subreddit
 EOT;
 
       $statement = $db->prepare($query);
       $statement->bindParam(':username', $user);
       $statement->bindParam(':subreddit', $subreddit);
-      $statement->bindParam(':preference', $preference);
       $statement->execute();
+      $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+      $exists = 0;
+      foreach($results as $row) {
+          $exists = 1;
+      } 
+
+      if ($exists == 0) {
+         $query = <<<EOT
+            INSERT INTO `followingSubreddit`
+            (`userName`, `subreddit`, `preferenceValue`)
+            VALUES (:username, :subreddit, :preferenceValue)
+EOT;
+
+         $statement = $db->prepare($query);
+         $statement->bindParam(':username', $user);
+         $statement->bindParam(':subreddit', $subreddit);
+         $statement->bindParam(':preferenceValue', $preference);
+         $statement->execute();
+      }
+      else { 
+         $query = <<<EOT
+            UPDATE `followingSubreddit` SET
+            `preferenceValue` = :preferenceValue
+            WHERE `subreddit` = :subreddit AND `userName` = :username
+EOT;
+
+         $statement = $db->prepare($query);
+         $statement->bindParam(':username', $user);
+         $statement->bindParam(':subreddit', $subreddit);
+         $statement->bindParam(':preferenceValue', $preference);
+         $statement->execute();
+      }
    }
 }

@@ -106,18 +106,23 @@ function getSubredditValue(subredditName) {
    return $("#" + subredditName).val();
 }
 
-function addSubredditSlider(subredditName) {
+function addSubredditSlider(subreddit) {
+   var subredditName = subreddit.subreddit;
    var slider = $("<input>").attr("type", "range")
                             .attr("name", "slider-1")
                             .attr("id", subredditName)
-                            .attr("value", defaultVal) // get from database
+                            .attr("value", subreddit.preferenceValue) // get from database
                             .attr("min", min)
                             .attr("max", max);
-   slider.addEventListener("mouseup", function () {
-        // add to database
-   });
    $("#subreddits").append("<label>r/" + subredditName + "</label>")
                    .append(slider);
+
+   slider.on("mouseup", function () {
+      var toAdd = {};
+      toAdd["subreddit"] = this.id;
+      toAdd["preferenceValue"] = this.value;
+      var request = $.post('/settings/subreddits', JSON.stringify(toAdd));
+   });
 }
 
 function addFollowUser(user) {
@@ -155,20 +160,25 @@ $("#uButton").click(function() {
       var request = $.post('/settings/following', newUser);
       addFollowUser(newUser);
    }
+   $("#uSearch").val("");
 });
    
 $("#rButton").click(function() {
    var newSubreddit = $("#rSearch").val(), alreadyAdded = false;
-   for (i=0; i < users.length && !alreadyAdded; i++) {
-      alreadyAdded = users[i] == newUser;
+   for (i=0; i < subreddits.length && !alreadyAdded; i++) {
+      alreadyAdded = subreddits[i] == newSubreddit;
    }
    if (!alreadyAdded) {
       subreddits[subreddits.length] = newSubreddit;
-      //TODO:Add to database
+      var toAdd = {};
+      toAdd["subreddit"] = newSubreddit;
+      toAdd["preferenceValue"] = defaultVal;
+      var request = $.post('/settings/subreddits', JSON.stringify(toAdd));
       if (newSubreddit != "") {
-         addSubredditSlider(newSubreddit);
+         addSubredditSlider(toAdd);
       }
    }
+   $("#rSearch").val("");
 });
 
 
