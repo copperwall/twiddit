@@ -104,13 +104,17 @@ $app->post('/login', function() use ($app) {
    $db = TwidditDB::db();
    $username = $app->request->post('username');
    $password = $app->request->post('password');
-    
-   $query = "SELECT * FROM  users where userName='$username' and userPassword='$password'";
+
+   $stmt = $db->prepare("SELECT * FROM  users where userName=':username' and userPassword=':password'");
 
    if ($db == null) {
       echo 'hi your db is null';
    }
-   $result = $db->query($query);
+
+   $stmt->bindParam(':username', $username);
+   $stmt->bindParam(':password', $password);
+   $stmt->execute();
+   $result = $stmt->fetchAll();
 
    if($result->rowCount() == 0) {
       $failpage = new View('signin.phtml');
@@ -129,19 +133,26 @@ $app->post('/signup', function() use ($app) {
    $username = $app->request->post('username');
    $password = $app->request->post('password');
 
-   $query = "SELECT * FROM  users where userName='$username'";
-   $result = $db->query($query);
-   
+   $stmt = $db->prepare("SELECT * FROM users WHERE userName = ':username'");
+
+   $stmt->bindParam(':username', $username);
+   $stmt->execute();
+
+   $result = $stmt->fetchAll();
+
    if ($result->rowCount() > 0) {
      $failpage = new View('signin.php');
      $failpage->addPageVariable('signupfail', true);
      $failpage->render();
    } else {
-     $insert = "INSERT INTO users values('$username', '$password')";
-     $result = $db->exec($insert);
+     $stmt = $db->prepare("INSERT INTO users values(':username', ':password')";
+     $stmt->bindParam(':username', $username);
+     $stmt->bindParam(':password', $password);
+     $stmt->execute();
+     $result = $stmt->fetchAll();
      $successpage = new View('signin.php');
      $successpage->addPageVariable('signupsuccess', true);
-     $successpage->render(); 
+     $successpage->render();
    }
 });
 
