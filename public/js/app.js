@@ -78,25 +78,25 @@ $.when.apply($, [feedRequest, subredditRequest, settingsRequest]).done(function(
 
 function commentToHTML(post) {
    var container = $("<div class='comment_blurb'></div>");
-   var author = $("<span class='author lead'>by " + post.author + "</span>");
-   // var author = $("<h4 class='lead'>" + post.author + "</h4>");
-   var subreddit = $("<span class='subreddit text-muted'>in r/" + post.subreddit + "</span>");
    var favoriteIcon = $("<span class=\"favorite glyphicon glyphicon-star-empty\" aria-hidden=\"true\" data-name=\"" + post.name + "\"></span>");
+   var author = $("<span class='author lead'>by " + post.author + "</span>");
+   var subreddit = $("<span class='subreddit text-muted'>in r/" + post.subreddit + "</span>");
    // The jQuery madness happening here is to decode html entities
    var body = $('<p class="comment_body"></p>').html(post.body_html).text();
 
-   return container.append([author, subreddit, favoriteIcon, body]);
+   return container.append([favoriteIcon, author, subreddit, body]);
 };
 
 function subToHTML(post) {
    var container = $("<div class='comment_blurb'></div>");
+   var favoriteIcon = $("<span class=\"favorite glyphicon glyphicon-star-empty\" aria-hidden=\"true\" data-name=\"" + post.name + "\"></span>");
    var title = $("<a href='" + post.url + "'><h4 class='title'>" + post.title + "</h4></a>");
    var author = $("<span class='author lead'>by " + post.author + "</span>");
    var subreddit = $("<span class='subreddit text-muted'>in r/" + post.subreddit + "</span>");
    // The jQuery madness happening here is to decode html entities
    var body = $('<p class="comment_body"></p>').html(post.selftext_html).text();
 
-   return container.append([title, author, subreddit, body]);
+   return container.append([favoriteIcon, title, author, subreddit, body]);
 };
 
 // Preferences functions
