@@ -105,7 +105,7 @@ $app->post('/login', function() use ($app) {
    $username = $app->request->post('username');
    $password = $app->request->post('password');
 
-   $stmt = $db->prepare("SELECT * FROM  users where userName=':username' and userPassword=':password'");
+   $stmt = $db->prepare("SELECT * FROM  users where userName=:username and userPassword=:password");
 
    if ($db == null) {
       echo 'hi your db is null';
@@ -116,7 +116,7 @@ $app->post('/login', function() use ($app) {
    $stmt->execute();
    $result = $stmt->fetchAll();
 
-   if($result->rowCount() == 0) {
+   if(count($result) == 0) {
       $failpage = new View('signin.phtml');
       $failpage->addPageVariable('failure', true);
       $failpage->render();
@@ -133,24 +133,23 @@ $app->post('/signup', function() use ($app) {
    $username = $app->request->post('username');
    $password = $app->request->post('password');
 
-   $stmt = $db->prepare("SELECT * FROM users WHERE userName = ':username'");
+   $stmt = $db->prepare("SELECT * FROM users WHERE userName = :username");
 
    $stmt->bindParam(':username', $username);
    $stmt->execute();
 
    $result = $stmt->fetchAll();
 
-   if ($result->rowCount() > 0) {
-     $failpage = new View('signin.php');
+   if (count($result)) {
+     $failpage = new View('signin.phtml');
      $failpage->addPageVariable('signupfail', true);
      $failpage->render();
    } else {
-     $stmt = $db->prepare("INSERT INTO users values(':username', ':password')";
+     $stmt = $db->prepare("INSERT INTO users (userName, userPassword) values (:username, :password)");
      $stmt->bindParam(':username', $username);
      $stmt->bindParam(':password', $password);
      $stmt->execute();
-     $result = $stmt->fetchAll();
-     $successpage = new View('signin.php');
+     $successpage = new View('signin.phtml');
      $successpage->addPageVariable('signupsuccess', true);
      $successpage->render();
    }
