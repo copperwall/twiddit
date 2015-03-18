@@ -26,6 +26,11 @@
    margin-bottom: 30px;
 }
 
+#messaging_page {
+   display:none;
+   margin-bottom: 30px;
+}
+
 .section_title {
    margin-bottom: 20px;
 }
@@ -54,4 +59,13 @@
 
 .glyphicon-star {
    color: gold;
+}
+
+.form-control {
+   width: 200px;
+}
+
+#message_body {
+   width: 400px;
+   height: 100px;
 }

@@ -10,32 +10,51 @@ $('#logout').click(function() {
    window.location = '/';
 });
 
+// TODO Should add a cool function that abstracts this out.
 $('#following_tab').click(function() {
    $('#following_tab').addClass('active');
    $('#subreddits_tab').removeClass('active');
    $('#preferences_tab').removeClass('active');
+   $('#messaging_tab').removeClass('active');
 
    $('#following_feed').show();
    $('#preferences_page').hide();
    $('#subreddits_feed').hide();
+   $('#messaging_page').hide();
 });
 
 $('#subreddits_tab').click(function() {
    $('#subreddits_tab').addClass('active');
    $('#following_tab').removeClass('active');
    $('#preferences_tab').removeClass('active');
+   $('#messaging_tab').removeClass('active');
 
    $('#subreddits_feed').show();
    $('#preferences_page').hide();
    $('#following_feed').hide();
+   $('#messaging_page').hide();
 });
 
 $('#preferences_tab').click(function() {
    $('#preferences_tab').addClass('active');
    $('#following_tab').removeClass('active');
    $('#subreddits_tab').removeClass('active');
+   $('#messaging_tab').removeClass('active');
 
    $('#preferences_page').show();
+   $('#following_feed').hide();
+   $('#subreddits_feed').hide();
+   $('#messaging_page').hide();
+});
+
+$('#messaging_tab').click(function() {
+   $('#messaging_tab').addClass('active');
+   $('#preferences_tab').removeClass('active');
+   $('#following_tab').removeClass('active');
+   $('#subreddits_tab').removeClass('active');
+
+   $('#messaging_page').show();
+   $('#preferences_page').hide();
    $('#following_feed').hide();
    $('#subreddits_feed').hide();
 });
@@ -147,6 +166,28 @@ function favorite() {
    request.done(function() {
       $(self).removeClass('glyphicon-star-empty');
       $(self).addClass('glyphicon-star');
+   });
+}
+
+function sendMessage() {
+   // Grab recipient
+   var recipient = $("#message_recipient").val();
+   // Grab subject
+   var subject = $("#message_subject").val();
+   // Grab message
+   var body = $("#message_body").val();
+
+   var data = {
+      recipient: recipient,
+      subject: subject,
+      body: body
+   }
+
+   // Send off to backend
+   var request = $.post('/message', JSON.stringify(data));
+   request.done(function(data) {
+      // if success, show success label and clear text
+      // else, show failure label
    });
 }
 
