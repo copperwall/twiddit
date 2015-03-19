@@ -180,5 +180,3 @@ $("#rButton").click(function() {
    }
    $("#rSearch").val("");
 });
-
-

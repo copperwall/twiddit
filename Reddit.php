@@ -12,8 +12,8 @@ class Reddit {
     * @param $subreddits - An array of subreddit names.
     * @param $limit (optional) - The number of posts to grab.
     */
-   public static function getSubredditPosts(array $subreddits, $limit = 5) {
-      return self::getItems($subreddits, $limit, 'subreddit');
+   public static function getSubredditPosts($subreddit, $limit = 5) {
+      return self::getItems([$subreddit], $limit, 'subreddit');
    }
    
    /**

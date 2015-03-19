@@ -64,7 +64,7 @@ $app->get('/subreddits', function() use ($app) {
    $db = TwidditDB::db();
    $username = $_COOKIE['user'];
    $query = <<<EOT
-      SELECT `subreddit`
+      SELECT `subreddit`, `preferenceValue`
       FROM `followingSubreddit`
       WHERE `userName` = :username
 EOT;
@@ -74,13 +74,13 @@ EOT;
    $statement->execute();
    $results = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-   $subreddits = [];
+   $posts = [];
    foreach ($results as $row) {
-      $subreddits[] = $row['subreddit'];
+      $subredditPosts = Reddit::getSubredditPosts($row['subreddit'], $row['preferenceValue']);
+      $posts = array_merge($posts, $subredditPosts);
    }
-   $data = Reddit::getSubredditPosts($subreddits);
 
-   echo json_encode($data);
+   echo json_encode($posts);
 });
 
 $app->get('/reddit_callback', function() use ($app) {
