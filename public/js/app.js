@@ -100,10 +100,11 @@ function commentToHTML(post) {
    var favoriteIcon = $("<span class=\"favorite glyphicon glyphicon-star-empty\" aria-hidden=\"true\" data-name=\"" + post.name + "\"></span>");
    var author = $("<span class='author lead'>by " + post.author + "</span>");
    var subreddit = $("<span class='subreddit text-muted'>in r/" + post.subreddit + "</span>");
+   var timeSince = $("<p class=\"timestamp text-muted\">" + getTimeSince(post.created_utc) + "</p>");
    // The jQuery madness happening here is to decode html entities
    var body = $('<p class="comment_body"></p>').html(post.body_html).text();
 
-   return container.append([favoriteIcon, author, subreddit, body]);
+   return container.append([favoriteIcon, author, subreddit, timeSince, body]);
 };
 
 function subToHTML(post) {
@@ -112,10 +113,11 @@ function subToHTML(post) {
    var title = $("<a href='" + post.url + "'><h4 class='title'>" + post.title + "</h4></a>");
    var author = $("<span class='author lead'>by " + post.author + "</span>");
    var subreddit = $("<span class='subreddit text-muted'>in r/" + post.subreddit + "</span>");
+   var timeSince = $("<p class=\"timestamp text-muted\">" + getTimeSince(post.created_utc) + "</p>");
    // The jQuery madness happening here is to decode html entities
    var body = $('<p class="comment_body"></p>').html(post.selftext_html).text();
 
-   return container.append([favoriteIcon, title, author, subreddit, body]);
+   return container.append([favoriteIcon, title, author, subreddit, timeSince, body]);
 };
 
 // Preferences functions
@@ -203,6 +205,26 @@ function sendMessage() {
       $("#message_result").html(failMessage);
       $("#message_result").show();
    });
+}
+
+/**
+ * Display time difference in days, hours, or minutes.
+ */
+function getTimeSince(date) {
+   var timeSince = (Date.now() / 1000) - date;
+   var days = Math.floor(timeSince / (60 * 60 * 24));
+
+   if (days)
+      return days + " days ago";
+
+   var hours = Math.floor(timeSince / (60 * 60));
+
+   if (hours)
+      return hours + " hours ago";
+
+   var minutes = Math.floor(timeSince / 60);
+
+   return minutes + " minutes ago";
 }
 
 $("#uButton").click(function() {
