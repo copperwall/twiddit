@@ -38,6 +38,7 @@
 /* Subreddit self and comment text */
 .md {
    padding-top: 20px;
+   word-break: break-all;
 }
 
 #loading_area {
