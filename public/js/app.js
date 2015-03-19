@@ -93,6 +93,7 @@ $.when.apply($, [feedRequest, subredditRequest, settingsRequest]).done(function(
    $('#loading_area').hide();
    $('#following_feed').show();
    $('.favorite').click(favorite);
+   $('#message_send').click(sendMessage);
 });
 
 function commentToHTML(post) {
@@ -177,17 +178,31 @@ function sendMessage() {
    // Grab message
    var text = $("#message_body").val();
 
+   $("#message_result").hide();
    var data = {
       to: recipient,
       subject: subject,
       text: text
    }
 
+   $(".form-control").attr("readonly", "");
    // Send off to backend
    var request = $.post('/message', JSON.stringify(data));
    request.done(function(data) {
-      // if success, show success label and clear text
-      // else, show failure label
+      $(".form-control").attr("readonly", null);
+      $(".form-control").val("");
+      $("#message_result").removeClass();
+      $("#message_result").addClass("glyphicon glyphicon-ok");
+      $("#message_result").show();
+   });
+
+   request.fail(function() {
+      $(".form-control").attr("readonly", null);
+      var failMessage = "Ruh roh, your message failed. Please try again</span>";
+      $("#message_result").removeClass();
+      $("#message_result").addClass('bg-danger');
+      $("#message_result").html(failMessage);
+      $("#message_result").show();
    });
 }
 

@@ -62,6 +62,12 @@
    color: gold;
 }
 
+.glyphicon-ok {
+   color: green;
+   font-size: 16px;
+   padding-left: 7px;
+}
+
 .form-control {
    width: 200px;
 }
