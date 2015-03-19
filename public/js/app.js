@@ -98,7 +98,7 @@ $.when.apply($, [feedRequest, subredditRequest, settingsRequest]).done(function(
 function commentToHTML(post) {
    var container = $("<div class='comment_blurb'></div>");
    var favoriteIcon = $("<span class=\"favorite glyphicon glyphicon-star-empty\" aria-hidden=\"true\" data-name=\"" + post.name + "\"></span>");
-   var title = $("<a href='" + post.link_url + "'><h5 class='title'>" + post.link_title + "</h5></a><hr>");
+   var title = $("<a target=\"_blank\" href='" + post.link_url + "'><h5 class='title'>" + post.link_title + "</h5></a><hr>");
    var timeSince = $("<span class=\"timestamp text-muted\">" + getTimeSince(post.created_utc) + "</span>");
    var author = $("<span class='author lead'>by " + post.author + "</span>");
    var subreddit = $("<span class='subreddit text-muted'>in r/" + post.subreddit + "</span>");
@@ -112,7 +112,7 @@ function subToHTML(post) {
    var container = $("<div class='comment_blurb'></div>");
    var favoriteIcon = $("<span class=\"favorite glyphicon glyphicon-star-empty\" aria-hidden=\"true\" data-name=\"" + post.name + "\"></span>");
    var timeSince = $("<span class=\"timestamp text-muted\">" + getTimeSince(post.created_utc) + "</span>");
-   var title = $("<a href='" + post.url + "'><h4 class='title'>" + post.title + "</h4></a>");
+   var title = $("<a target=\"_blank\" href='" + post.url + "'><h4 class='title'>" + post.title + "</h4></a>");
    var author = $("<span class='author lead'>by " + post.author + "</span>");
    var subreddit = $("<span class='subreddit text-muted'>in r/" + post.subreddit + "</span>");
    // The jQuery madness happening here is to decode html entities
