@@ -2,7 +2,7 @@
 .comment_blurb {
    margin-top: 20px;
    border-left: 4px solid #558CCC;
-   padding: 20px 20px 8px;
+   padding: 20px;
    max-width: 600px;
    box-shadow: 1px 1px 0.5px grey, 0px -0.5px 0.5px grey;
 }
@@ -38,7 +38,20 @@
 /* Subreddit self and comment text */
 .md {
    padding-top: 20px;
+}
+
+.md a {
    word-break: break-all;
+}
+
+.timestamp {
+   float:right;
+   padding-right: 14px;
+}
+
+hr {
+   margin-top: 12px !important;
+   margin-bottom: 0px !important;
 }
 
 #loading_area {
