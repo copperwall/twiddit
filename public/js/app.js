@@ -98,24 +98,32 @@ $.when.apply($, [feedRequest, subredditRequest, settingsRequest]).done(function(
 function commentToHTML(post) {
    var container = $("<div class='comment_blurb'></div>");
    var favoriteIcon = $("<span class=\"favorite glyphicon glyphicon-star-empty\" aria-hidden=\"true\" data-name=\"" + post.name + "\"></span>");
+   var title = $("<a href='" + post.link_url + "'><h5 class='title'>" + post.link_title + "</h5></a><hr>");
+   var timeSince = $("<span class=\"timestamp text-muted\">" + getTimeSince(post.created_utc) + "</span>");
    var author = $("<span class='author lead'>by " + post.author + "</span>");
    var subreddit = $("<span class='subreddit text-muted'>in r/" + post.subreddit + "</span>");
    // The jQuery madness happening here is to decode html entities
    var body = $('<p class="comment_body"></p>').html(post.body_html).text();
 
-   return container.append([favoriteIcon, author, subreddit, body]);
+   return container.append([favoriteIcon, author, subreddit, timeSince, title, body]);
 };
 
 function subToHTML(post) {
    var container = $("<div class='comment_blurb'></div>");
    var favoriteIcon = $("<span class=\"favorite glyphicon glyphicon-star-empty\" aria-hidden=\"true\" data-name=\"" + post.name + "\"></span>");
+   var timeSince = $("<span class=\"timestamp text-muted\">" + getTimeSince(post.created_utc) + "</span>");
    var title = $("<a href='" + post.url + "'><h4 class='title'>" + post.title + "</h4></a>");
    var author = $("<span class='author lead'>by " + post.author + "</span>");
    var subreddit = $("<span class='subreddit text-muted'>in r/" + post.subreddit + "</span>");
    // The jQuery madness happening here is to decode html entities
    var body = $('<p class="comment_body"></p>').html(post.selftext_html).text();
 
-   return container.append([favoriteIcon, title, author, subreddit, body]);
+   if (post.is_self) {
+      console.log(post.title, 'selftext');
+      subreddit.append("<hr>");
+   }
+
+   return container.append([favoriteIcon, timeSince, title, author, subreddit, body]);
 };
 
 // Preferences functions
@@ -203,6 +211,26 @@ function sendMessage() {
       $("#message_result").html(failMessage);
       $("#message_result").show();
    });
+}
+
+/**
+ * Display time difference in days, hours, or minutes.
+ */
+function getTimeSince(date) {
+   var timeSince = (Date.now() / 1000) - date;
+   var days = Math.floor(timeSince / (60 * 60 * 24));
+
+   if (days)
+      return days + " days ago";
+
+   var hours = Math.floor(timeSince / (60 * 60));
+
+   if (hours)
+      return hours + " hours ago";
+
+   var minutes = Math.floor(timeSince / 60);
+
+   return minutes + " minutes ago";
 }
 
 $("#uButton").click(function() {
