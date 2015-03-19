@@ -1,7 +1,6 @@
 // View logic and helper functions for the main view
-
 var posts = {};
-var url = 'http://twiddit.ddns.net:2000';
+
 // Name of users that are being followed and name of subreddits being followed
 var users = [], subreddits = [];
 
@@ -10,11 +9,9 @@ $('#logout').click(function() {
    window.location = '/';
 });
 
-// TODO Should add a cool function that abstracts this out.
-
-var feedRequest = $.getJSON(url + '/feed');
-var settingsRequest = $.getJSON(url + '/settings');
-var subredditRequest = $.getJSON(url + '/subreddits');
+var feedRequest = $.getJSON('/feed');
+var settingsRequest = $.getJSON('/settings');
+var subredditRequest = $.getJSON('/subreddits');
 
 feedRequest.done(function(posts){
    posts.forEach(function(post) {
@@ -48,6 +45,7 @@ $.when.apply($, [feedRequest, subredditRequest, settingsRequest]).done(function(
    $('.favorite').click(favorite);
    $('#message_send').click(sendMessage);
 
+   // TODO Should add a cool function that abstracts this out.
    $('#following_tab').click(function() {
       $('#following_tab').addClass('active');
       $('#subreddits_tab').removeClass('active');
