@@ -4,10 +4,6 @@
  * Wrapper class for the PDO connection.
  */
 class TwidditDB {
-   private static $db_host = "mydbinstance.cqp85dchbqjz.us-west-2.rds.amazonaws.com;port=3306";
-   private static $db_name = "twiddit";
-   private static $db_user = "stanley";
-   private static $db_pass = "ims01337";
    private static $db = null;
 
    /**
@@ -22,9 +18,13 @@ class TwidditDB {
     * Create a connection to the DB.
     */
    public static function init() {
+      $host = $name = $user = $pass = null;
+      $db_config = self::getCredentials();
+      extract($db_config, EXTR_IF_EXISTS);
+
       try {
-         $connect_string = "mysql:host=" . self::$db_host . ";dbname=" . self::$db_name;
-         self::$db = new PDO($connect_string, self::$db_user, self::$db_pass);
+         $connect_string = "mysql:host=$host;dbname=$name";
+         self::$db = new PDO($connect_string, $user, $pass);
          // set the PDO error mode to exception
          self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       } catch (PDOException $e) {
@@ -32,5 +32,15 @@ class TwidditDB {
       }
 
       return self::$db;
+   }
+
+   /**
+    * Grab DB credentials from config.json.
+    */
+   private static function getCredentials() {
+      $JSONConfig = file_get_contents(CONFIG_FILE);
+      $config = json_decode($JSONConfig, /* assoc */ true);
+
+      return $config['db'];
    }
 }

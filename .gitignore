@@ -4,3 +4,6 @@
 
 # Ignore composer packages
 vendor/
+
+# Ignore user config file
+config.json
