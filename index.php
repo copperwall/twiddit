@@ -5,11 +5,11 @@ header("Access-Control-Allow-Origin: *");
 require 'vendor/autoload.php';
 
 // Our libs
-require_once('TwidditDB.php');
-require_once('Reddit.php');
-require_once('Settings.php');
-require_once('View.php');
-require_once('Auth.php');
+require_once('Lib/TwidditDB.php');
+require_once('Lib/Reddit.php');
+require_once('Lib/Settings.php');
+require_once('Lib/View.php');
+require_once('Lib/Auth.php');
 
 // If request is for the public directory, serve static file (for js/css)
 if (stristr($_SERVER['REQUEST_URI'], 'public')) {
