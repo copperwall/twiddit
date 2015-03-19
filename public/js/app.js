@@ -11,53 +11,6 @@ $('#logout').click(function() {
 });
 
 // TODO Should add a cool function that abstracts this out.
-$('#following_tab').click(function() {
-   $('#following_tab').addClass('active');
-   $('#subreddits_tab').removeClass('active');
-   $('#preferences_tab').removeClass('active');
-   $('#messaging_tab').removeClass('active');
-
-   $('#following_feed').show();
-   $('#preferences_page').hide();
-   $('#subreddits_feed').hide();
-   $('#messaging_page').hide();
-});
-
-$('#subreddits_tab').click(function() {
-   $('#subreddits_tab').addClass('active');
-   $('#following_tab').removeClass('active');
-   $('#preferences_tab').removeClass('active');
-   $('#messaging_tab').removeClass('active');
-
-   $('#subreddits_feed').show();
-   $('#preferences_page').hide();
-   $('#following_feed').hide();
-   $('#messaging_page').hide();
-});
-
-$('#preferences_tab').click(function() {
-   $('#preferences_tab').addClass('active');
-   $('#following_tab').removeClass('active');
-   $('#subreddits_tab').removeClass('active');
-   $('#messaging_tab').removeClass('active');
-
-   $('#preferences_page').show();
-   $('#following_feed').hide();
-   $('#subreddits_feed').hide();
-   $('#messaging_page').hide();
-});
-
-$('#messaging_tab').click(function() {
-   $('#messaging_tab').addClass('active');
-   $('#preferences_tab').removeClass('active');
-   $('#following_tab').removeClass('active');
-   $('#subreddits_tab').removeClass('active');
-
-   $('#messaging_page').show();
-   $('#preferences_page').hide();
-   $('#following_feed').hide();
-   $('#subreddits_feed').hide();
-});
 
 var feedRequest = $.getJSON(url + '/feed');
 var settingsRequest = $.getJSON(url + '/settings');
@@ -94,6 +47,54 @@ $.when.apply($, [feedRequest, subredditRequest, settingsRequest]).done(function(
    $('#following_feed').show();
    $('.favorite').click(favorite);
    $('#message_send').click(sendMessage);
+
+   $('#following_tab').click(function() {
+      $('#following_tab').addClass('active');
+      $('#subreddits_tab').removeClass('active');
+      $('#preferences_tab').removeClass('active');
+      $('#messaging_tab').removeClass('active');
+
+      $('#following_feed').show();
+      $('#preferences_page').hide();
+      $('#subreddits_feed').hide();
+      $('#messaging_page').hide();
+   });
+
+   $('#subreddits_tab').click(function() {
+      $('#subreddits_tab').addClass('active');
+      $('#following_tab').removeClass('active');
+      $('#preferences_tab').removeClass('active');
+      $('#messaging_tab').removeClass('active');
+
+      $('#subreddits_feed').show();
+      $('#preferences_page').hide();
+      $('#following_feed').hide();
+      $('#messaging_page').hide();
+   });
+
+   $('#preferences_tab').click(function() {
+      $('#preferences_tab').addClass('active');
+      $('#following_tab').removeClass('active');
+      $('#subreddits_tab').removeClass('active');
+      $('#messaging_tab').removeClass('active');
+
+      $('#preferences_page').show();
+      $('#following_feed').hide();
+      $('#subreddits_feed').hide();
+      $('#messaging_page').hide();
+   });
+
+   $('#messaging_tab').click(function() {
+      $('#messaging_tab').addClass('active');
+      $('#preferences_tab').removeClass('active');
+      $('#following_tab').removeClass('active');
+      $('#subreddits_tab').removeClass('active');
+
+      $('#messaging_page').show();
+      $('#preferences_page').hide();
+      $('#following_feed').hide();
+      $('#subreddits_feed').hide();
+   });
 });
 
 function commentToHTML(post) {
