@@ -33,7 +33,7 @@ CREATE TABLE `followingSubreddit` (
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `userName` varchar(30) NOT NULL,
-  `userPassword` varchar(30) NOT NULL,
+  `passwordHash` varchar(255),
   `redditToken` varchar(1000) DEFAULT NULL,
   `redditRefreshToken` varchar(1000) DEFAULT NULL,
   `expires_in` int(11) DEFAULT NULL,
