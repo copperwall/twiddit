@@ -13,7 +13,7 @@ class Auth {
 
    // Auth scopes that we need
    private static $scopes = ['save', 'privatemessages'];
-   private static $redirect_uri = 'http://twiddit.ddns.net:2000/reddit_callback';
+   private static $redirect_uri = 'http://devopps.me:2000/reddit_callback';
 
    /**
     * Build the Reddit OAuth link using our ClientID, Redirect URI and permissions.
