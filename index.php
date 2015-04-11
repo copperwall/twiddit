@@ -108,26 +108,34 @@ $app->post('/login', function() use ($app) {
    $username = $app->request->post('username');
    $password = $app->request->post('password');
 
-   $stmt = $db->prepare("SELECT * FROM  users where userName=:username and userPassword=:password");
-
-   if ($db == null) {
-      echo 'hi your db is null';
-   }
+   $query = <<<EOT
+      SELECT `passwordHash`
+      FROM `users`
+      WHERE `userName` = :username
+EOT;
+   $stmt = $db->prepare($query);
 
    $stmt->bindParam(':username', $username);
-   $stmt->bindParam(':password', $password);
    $stmt->execute();
-   $result = $stmt->fetchAll();
+   $result = $stmt->fetch();
 
-   if(count($result) == 0) {
-      $failpage = new View('signin.phtml');
-      $failpage->addPageVariable('failure', true);
-      $failpage->render();
+   if(!$result) {
+      $failMode = 'noUser';
    } else {
-     $cookie_name = 'user';
-     $cookie_value = $username;
-     setcookie($cookie_name, $cookie_value, time() + 36000); // cookie lasts 60 secs
-     $app->redirect('/');
+      if (!password_verify($password, $result['passwordHash'])) {
+         $failMode = 'authFailure';
+      } else {
+         $cookie_name = 'user';
+         $cookie_value = $username;
+         setcookie($cookie_name, $cookie_value, time() + 36000); // cookie lasts 60 secs
+         $app->redirect('/');
+      }
+   }
+
+   if ($failMode) {
+      $failpage = new View('signin.phtml');
+      $failpage->addPageVariable($failMode, true);
+      $failpage->render();
    }
 });
 
@@ -135,8 +143,14 @@ $app->post('/signup', function() use ($app) {
    $db = TwidditDB::db();
    $username = $app->request->post('username');
    $password = $app->request->post('password');
+   $hash = password_hash($password, PASSWORD_DEFAULT);
 
-   $stmt = $db->prepare("SELECT * FROM users WHERE userName = :username");
+   $query = <<<EOT
+      SELECT *
+      FROM `users`
+      WHERE `userName` = :username
+EOT;
+   $stmt = $db->prepare($query);
 
    $stmt->bindParam(':username', $username);
    $stmt->execute();
@@ -144,17 +158,25 @@ $app->post('/signup', function() use ($app) {
    $result = $stmt->fetchAll();
 
    if (count($result)) {
-     $failpage = new View('signin.phtml');
-     $failpage->addPageVariable('signupfail', true);
-     $failpage->render();
+      // Username already exists
+      $failpage = new View('signin.phtml');
+      $failpage->addPageVariable('signupfail', true);
+      $failpage->render();
    } else {
-     $stmt = $db->prepare("INSERT INTO users (userName, userPassword) values (:username, :password)");
-     $stmt->bindParam(':username', $username);
-     $stmt->bindParam(':password', $password);
-     $stmt->execute();
-     $successpage = new View('signin.phtml');
-     $successpage->addPageVariable('signupsuccess', true);
-     $successpage->render();
+      // Create new user
+      $query = <<<EOT
+         INSERT INTO `users`
+          (`userName`, `passwordHash`)
+          VALUES (:username, :hash)
+EOT;
+      $stmt = $db->prepare($query);
+      $stmt->bindParam(':username', $username);
+      $stmt->bindParam(':hash', $hash);
+      $stmt->execute();
+
+      $successpage = new View('signin.phtml');
+      $successpage->addPageVariable('signupsuccess', true);
+      $successpage->render();
    }
 });
 

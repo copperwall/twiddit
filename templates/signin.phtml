@@ -18,10 +18,13 @@
 		      <button id="logIn" class="btn btn-lg btn-primary btn-block" formmethod="post" type="submit" formaction="login">Log In</button>
 		      <button id="signup" class="btn btn-lg btn-primary btn-block" type="submit" formmethod="post" formaction="signup">Sign Up</button>
 	      </form>
-      <?php if (isset($failure)): ?>
+      <?php if (isset($noUser)): ?>
+         <p class='bg-danger'>This user doesn't exist, please sign up</p>
+      <?php endif; ?>
+      <?php if (isset($authFailure)): ?>
          <p class='bg-danger'>Invalid Username or Password</p>
       <?php endif; ?>
-      <?php if (isset($signupfail)): ?>
+      <?php if (isset($userExists)): ?>
          <p class='bg-danger'>User already exists</p>
       <?php endif; ?>
       <?php if (isset($signupsuccess)): ?>
