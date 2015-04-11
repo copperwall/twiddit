@@ -37,17 +37,13 @@ class Auth {
    }
 
    public static function getTokenFromAuthCode($code, $state) {
-      $opts = [
-         'http' => [
-            'method' => 'POST',
-            'header' => 'Authorization: Basic ' . base64_encode(CLIENT_ID . ':' . CLIENT_SECRET)
-                        . "\r\nContent-type: application/x-www-form-urlencoded",
-            'content' => "grant_type=authorization_code&code=$code&redirect_uri=" . self::$redirect_uri
-         ]
+      $url = 'https://www.reddit.com/api/v1/access_token';
+      $headers = [
+         'Authorization' => 'Basic ' . base64_encode(CLIENT_ID . ':' . CLIENT_SECRET),
       ];
+      $body = "grant_type=authorization_code&code=$code&redirect_uri=". self::$redirect_uri;
 
-      $context = stream_context_create($opts);
-      $JSONResponse = file_get_contents('https://www.reddit.com/api/v1/access_token', false, $context);
+      $JSONResponse = HTTP::post($url, $body, $headers);
       $response = json_decode($JSONResponse, /* assoc */ true);
 
       return $response;
@@ -161,17 +157,13 @@ EOT;
    private static function refreshAuthToken() {
       $refreshToken = self::getRefreshToken();
 
-      $opts = [
-         'http' => [
-            'method' => 'POST',
-            'header' => 'Authorization: Basic ' . base64_encode(CLIENT_ID . ':' . CLIENT_SECRET)
-                        . "\r\nContent-type: application/x-www-form-urlencoded",
-            'content' => "grant_type=refresh_token&refresh_token=$refreshToken"
-         ]
+      $url = 'https://www.reddit.com/api/v1/access_token';
+      $headers = [
+         'Authorization' => 'Basic ' . base64_encode(CLIENT_ID . ':' . CLIENT_SECRET),
       ];
+      $body = "grant_type=refresh_token&refresh_token=$refreshToken";
 
-      $context = stream_context_create($opts);
-      $JSONResponse = file_get_contents('https://www.reddit.com/api/v1/access_token', false, $context);
+      $JSONResponse = HTTP::post($url, $body, $headers);
       $response = json_decode($JSONResponse, /* assoc */ true);
       $response['refresh_token'] = $refreshToken;
 

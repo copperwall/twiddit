@@ -41,18 +41,13 @@ class Reddit {
     */
    public static function favorite($id) {
       $token = Auth::getToken();
-      $opts = [
-         'http' => [
-            'method' => 'POST',
-            'header' => "Authorization: bearer $token"
-            . "\r\nContent-type: application/x-www-form-urlencoded"
-            . "\r\nUser-Agent: twiddit:v0.1 (by /u/Zolokar)",
-            'content' => "id=$id"
-         ]
+      $url = 'https://oauth.reddit.com/api/save';
+      $headers = [
+         'Authorization' => "bearer $token",
       ];
+      $body = "id=$id";
 
-      $context = stream_context_create($opts);
-      file_get_contents('https://oauth.reddit.com/api/save', false, $context);
+      HTTP::post($url, $body, $headers);
    }
 
    /**
@@ -60,17 +55,14 @@ class Reddit {
     */
    public static function message($to, $subject, $text) {
       $token = Auth::getToken();
-      $opts = [
-         'http' => [
-            'method' => 'POST',
-            'header' => "Authorization: bearer $token"
-            . "\r\nContent-type: application/x-www-form-urlencoded"
-            . "\r\nUser-Agent: twiddit:v0.1 (by /u/Zolokar)",
-            'content' => "to=$to&subject=$subject&text=$text"
-         ]
+
+      $url = 'https://oauth.reddit.com/api/compose';
+      $headers = [
+         'Authorization' => "bearer $token",
       ];
-      $context = stream_context_create($opts);
-      file_get_contents('https://oauth.reddit.com/api/compose', false, $context);
+      $body = "to=$to&subject=$subject&text=$text";
+
+      HTTP::post($url, $body, $headers);
    }
 
    /**
@@ -82,16 +74,7 @@ class Reddit {
     * @param $type - Enum ('subreddit', 'comments', 'submitted')
     */
    private static function getItems(array $sources, $limit, $type) {
-      $options = [
-        'http'=> [
-          'method'=>"GET",
-          'header'=> "User-Agent: twiddit:v0.1 (by /u/Zolokar)"
-        ]
-      ];
-
       $items = [];
-      $context = stream_context_create($options);
-
 
       // Get content, parse into JSON, and add all chilren to items array
       foreach ($sources as $source) {
@@ -102,16 +85,16 @@ class Reddit {
             $url_path = "/user/$source/$type.json?limit=$limit";
          }
 
-         $apiResult = null;
+         $JSONResponse = null;
 
          try {
-            $apiResult = file_get_contents(BASE_URL . $url_path, false, $context);
+            $JSONResponse = HTTP::get(BASE_URL . $url_path);
          } catch (ErrorException $e) {
             // Shhh no tears, only sleep
             continue;
          }
-         $JSONresult = json_decode($apiResult, /* assoc */ true);
-         $children = $JSONresult['data']['children'];
+         $response = json_decode($JSONResponse, /* assoc */ true);
+         $children = $response['data']['children'];
 
          foreach ($children as $child) {
             array_push($items, $child['data']);

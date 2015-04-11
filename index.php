@@ -7,6 +7,7 @@ require 'vendor/autoload.php';
 define('CONFIG_FILE', 'config.json');
 
 // Our libs
+require_once('Lib/HTTP.php');
 require_once('Lib/TwidditDB.php');
 require_once('Lib/Reddit.php');
 require_once('Lib/Settings.php');
