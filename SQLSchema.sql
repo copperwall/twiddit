@@ -2,40 +2,53 @@
 -- Server version	5.5.41-log
 
 --
--- Table structure for table `followingRedditors`
---
-
-DROP TABLE IF EXISTS `followingRedditors`;
-CREATE TABLE `followingRedditors` (
-  `userName` varchar(30) NOT NULL,
-  `redditor` varchar(30) NOT NULL,
-  PRIMARY KEY (`userName`,`redditor`),
-  CONSTRAINT `followingRedditors_ibfk_1` FOREIGN KEY (`userName`) REFERENCES `users` (`userName`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Table structure for table `followingSubreddit`
---
-
-DROP TABLE IF EXISTS `followingSubreddit`;
-CREATE TABLE `followingSubreddit` (
-  `userName` varchar(30) NOT NULL,
-  `subreddit` varchar(30) NOT NULL,
-  `preferenceValue` int(11) DEFAULT '5',
-  PRIMARY KEY (`userName`,`subreddit`),
-  CONSTRAINT `followingSubreddit_ibfk_1` FOREIGN KEY (`userName`) REFERENCES `users` (`userName`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
 -- Table structure for table `users`
 --
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
-  `userName` varchar(30) NOT NULL,
-  `passwordHash` varchar(255),
-  `redditToken` varchar(1000) DEFAULT NULL,
-  `redditRefreshToken` varchar(1000) DEFAULT NULL,
+  `userid` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(30) NOT NULL,
+  `password_hash` varchar(255),
+  `reddit_token` varchar(1000) DEFAULT NULL,
+  `reddit_refresh_token` varchar(1000) DEFAULT NULL,
   `expires_in` int(11) DEFAULT NULL,
-  PRIMARY KEY (`userName`)
+  PRIMARY KEY (`userid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `redditors_followed`
+--
+
+DROP TABLE IF EXISTS `redditors_followed`;
+CREATE TABLE `redditors_followed` (
+  `userid` int(11) NOT NULL,
+  `redditor` varchar(30) NOT NULL,
+  PRIMARY KEY (`userid`,`redditor`),
+  CONSTRAINT `redditors_followed_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `users` (`userid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `subreddits_followed`
+--
+
+DROP TABLE IF EXISTS `subreddits_followed`;
+CREATE TABLE `subreddits_followed` (
+  `userid` int(11) NOT NULL,
+  `subreddit` varchar(30) NOT NULL,
+  `preference_value` int(11) DEFAULT '5',
+  PRIMARY KEY (`userid`,`subreddit`),
+  CONSTRAINT `subreddits_followed_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `users` (`userid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `sessions`
+--
+
+DROP TABLE IF EXISTS `sessions`;
+CREATE TABLE `sessions` (
+  `sessionid` varchar(255),
+  `userid` int(11) NOT NULL,
+  `expires_in` int(11) DEFAULT NULL,
+  PRIMARY KEY (`sessionid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

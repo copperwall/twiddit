@@ -14,15 +14,15 @@ class Settings {
 
       $query = <<<EOT
          SELECT `redditor`
-         FROM `followingRedditors`
-         WHERE `userName` = :username
+         FROM `redditors_followed`
+         WHERE `username` = :username
 EOT;
-
       $statement = $db->prepare($query);
       $statement->bindParam(':username', $user);
       $statement->execute();
       $results = $statement->fetchAll(PDO::FETCH_ASSOC);
 
+      // TODO Make this an array_map
       $redditors = [];
       foreach ($results as $row) {
          $redditors[] = $row['redditor'];
@@ -38,9 +38,9 @@ EOT;
       $db = TwidditDB::db();
 
       $query = <<<EOT
-         SELECT `subreddit`, `preferenceValue`
-         FROM `followingSubreddit`
-         WHERE `userName` = :username
+         SELECT `subreddit`, `preference_value`
+         FROM `subreddits_followed`
+         WHERE `username` = :username
 EOT;
 
       $statement = $db->prepare($query);
@@ -52,7 +52,7 @@ EOT;
       foreach ($results as $row) {
          $subreddits[] = [
             'subreddit' => $row['subreddit'],
-            'preferenceValue' => $row['preferenceValue']
+            'preferenceValue' => $row['preference_value']
          ];
       }
       return $subreddits;
@@ -66,8 +66,8 @@ EOT;
       $db = TwidditDB::db();
 
       $query = <<<EOT
-         INSERT INTO `followingRedditors`
-         (`userName`, `redditor`)
+         INSERT INTO `redditors_followed`
+         (`username`, `redditor`)
          VALUES (:username, :redditor)
 EOT;
 
@@ -85,9 +85,9 @@ EOT;
       $db = TwidditDB::db();
 
       $query = <<<EOT
-         SELECT * FROM `followingSubreddit`
-         WHERE `userName` = :username AND 
-               `subreddit` = :subreddit
+         SELECT * FROM `subreddits_followed`
+         WHERE `username` = :username
+          AND `subreddit` = :subreddit
 EOT;
 
       $statement = $db->prepare($query);
@@ -95,6 +95,9 @@ EOT;
       $statement->bindParam(':subreddit', $subreddit);
       $statement->execute();
       $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+      // What even?
+      // TODO Replace a count check or something
       $exists = 0;
       foreach($results as $row) {
           $exists = 1;
@@ -102,11 +105,10 @@ EOT;
 
       if ($exists == 0) {
          $query = <<<EOT
-            INSERT INTO `followingSubreddit`
-            (`userName`, `subreddit`, `preferenceValue`)
+            INSERT INTO `subreddits_followed`
+            (`username`, `subreddit`, `preference_value`)
             VALUES (:username, :subreddit, :preferenceValue)
 EOT;
-
          $statement = $db->prepare($query);
          $statement->bindParam(':username', $user);
          $statement->bindParam(':subreddit', $subreddit);
@@ -115,11 +117,11 @@ EOT;
       }
       else { 
          $query = <<<EOT
-            UPDATE `followingSubreddit` SET
-            `preferenceValue` = :preferenceValue
-            WHERE `subreddit` = :subreddit AND `userName` = :username
+            UPDATE `subreddits_followed`
+            SET `preference_value` = :preferenceValue
+            WHERE `subreddit` = :subreddit
+             AND `username` = :username
 EOT;
-
          $statement = $db->prepare($query);
          $statement->bindParam(':username', $user);
          $statement->bindParam(':subreddit', $subreddit);

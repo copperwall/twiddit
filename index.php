@@ -44,8 +44,8 @@ $app->get('/feed', function() use ($app) {
    $username = $_COOKIE['user'];
    $query = <<<EOT
       SELECT `redditor`
-      FROM `followingRedditors`
-      WHERE `userName` = :username
+      FROM `redditors_followed`
+      WHERE `username` = :username
 EOT;
 
    $statement = $db->prepare($query);
@@ -67,9 +67,9 @@ $app->get('/subreddits', function() use ($app) {
    $db = TwidditDB::db();
    $username = $_COOKIE['user'];
    $query = <<<EOT
-      SELECT `subreddit`, `preferenceValue`
-      FROM `followingSubreddit`
-      WHERE `userName` = :username
+      SELECT `subreddit`, `preference_value`
+      FROM `subreddits_followed`
+      WHERE `username` = :username
 EOT;
 
    $statement = $db->prepare($query);
@@ -109,9 +109,9 @@ $app->post('/login', function() use ($app) {
    $password = $app->request->post('password');
 
    $query = <<<EOT
-      SELECT `passwordHash`
+      SELECT `password_hash`
       FROM `users`
-      WHERE `userName` = :username
+      WHERE `username` = :username
 EOT;
    $stmt = $db->prepare($query);
 
@@ -148,7 +148,7 @@ $app->post('/signup', function() use ($app) {
    $query = <<<EOT
       SELECT *
       FROM `users`
-      WHERE `userName` = :username
+      WHERE `username` = :username
 EOT;
    $stmt = $db->prepare($query);
 
@@ -166,7 +166,7 @@ EOT;
       // Create new user
       $query = <<<EOT
          INSERT INTO `users`
-          (`userName`, `passwordHash`)
+          (`username`, `password_hash`)
           VALUES (:username, :hash)
 EOT;
       $stmt = $db->prepare($query);
