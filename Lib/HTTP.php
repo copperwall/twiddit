@@ -37,7 +37,7 @@ class HTTP {
          'Content-type' => 'application/x-www-form-urlencoded',
          'User-Agent' => USER_AGENT
       ];
-      array_merge($headers, $defaultHeaders);
+      $headers = array_merge($headers, $defaultHeaders);
 
       $opts = [
          'http' => [
