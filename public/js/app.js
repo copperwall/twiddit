@@ -1,5 +1,5 @@
 // View logic and helper functions for the main view
-var posts = {};
+var dirtySettings = false;
 
 // Name of users that are being followed and name of subreddits being followed
 var users = [], subreddits = [];
@@ -71,7 +71,6 @@ function subToHTML(post) {
    var body = $('<p class="comment_body"></p>').html(post.selftext_html).text();
 
    if (post.is_self) {
-      console.log(post.title, 'selftext');
       subreddit.append("<hr>");
    }
 
@@ -196,6 +195,7 @@ $("#uButton").click(function() {
       addFollowUser(newUser);
    }
    $("#uSearch").val("");
+   dirtySettings = true;
 });
    
 $("#rButton").click(function() {
@@ -214,6 +214,7 @@ $("#rButton").click(function() {
       }
    }
    $("#rSearch").val("");
+   dirtySettings = true;
 });
 
 /**
@@ -223,6 +224,11 @@ $("#rButton").click(function() {
 function switchView() {
    var clickedTab = $(this);
    var selectedView = clickedTab.attr('data-viewid');
+
+   if (dirtySettings) {
+      // reload settings
+      window.location = '/';
+   }
 
    clickedTab.addClass('active');
    $("#" + selectedView).show();
