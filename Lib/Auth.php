@@ -59,21 +59,21 @@ class Auth {
       // Need to update the token and the refresh token in the database of said 
       // user.
       $db = TwidditDB::db();
-      $user = $_COOKIE['user'];
+      $userid = User::getUserID();
 
       $query = <<<EOT
          UPDATE `users` SET
-         `redditToken` = :token,
-         `redditRefreshToken` = :refreshToken,
+         `reddit_token` = :token,
+         `reddit_refresh_token` = :refreshToken,
          `expires_in` = UNIX_TIMESTAMP() + (:expires_in)
-         WHERE `userName` = :user
+         WHERE `userid` = :userid
 EOT;
 
       $statement = $db->prepare($query);
       $statement->bindParam(':token', $token);
       $statement->bindParam(':refreshToken', $refreshToken);
       $statement->bindParam(':expires_in', $expires_in);
-      $statement->bindParam(':user', $user);
+      $statement->bindParam(':userid', $userid);
       $statement->execute();
    }
 
@@ -84,7 +84,7 @@ EOT;
     */
    public static function getToken() {
       $db = TwidditDB::db();
-      $user = $_COOKIE['user'];
+      $userid = User::getUserID();
 
       // If the token has expired, grab a new one with the refresh token and 
       // then reset the token, refresh token, and expiration time.
@@ -96,17 +96,16 @@ EOT;
       }
 
       $query = <<<EOT
-         SELECT `redditToken`
+         SELECT `reddit_token`
          FROM `users`
-         WHERE `userName` = :user
+         WHERE `userid` = :userid
 EOT;
-
       $statement = $db->prepare($query);
-      $statement->bindParam(':user', $user);
+      $statement->bindParam(':userid', $userid);
       $statement->execute();
 
       $result = $statement->fetch(PDO::FETCH_ASSOC);
-      return $result['redditToken'];
+      return $result['reddit_token'];
    }
 
    /**
@@ -116,34 +115,33 @@ EOT;
     */
    private static function getRefreshToken() {
       $db = TwidditDB::db();
-      $user = $_COOKIE['user'];
+      $userid = User::getUserID();
 
       $query = <<<EOT
-         SELECT `redditRefreshToken`
+         SELECT `reddit_refresh_token`
          FROM `users`
-         WHERE `userName` = :user
+         WHERE `userid` = :userid
 EOT;
       $statement = $db->prepare($query);
-      $statement->bindParam(':user', $user);
+      $statement->bindParam(':userid', $userid);
       $statement->execute();
 
       $result = $statement->fetch(PDO::FETCH_ASSOC);
-      $refreshToken = $result['redditRefreshToken'];
+      $refreshToken = $result['reddit_refresh_token'];
       return $refreshToken;
    }
 
    private static function hasExpired() {
       $db = TwidditDB::db();
-      $user = $_COOKIE['user'];
+      $userid = User::getUserID();
 
       $query = <<<EOT
          SELECT `expires_in`, UNIX_TIMESTAMP() AS now
          FROM `users`
-         WHERE `userName` = :name
+         WHERE `userid` = :userid
 EOT;
-
       $statement = $db->prepare($query);
-      $statement->bindParam(':name', $user);
+      $statement->bindParam(':userid', $userid);
       $statement->execute();
 
       $result = $statement->fetch(PDO::FETCH_ASSOC);

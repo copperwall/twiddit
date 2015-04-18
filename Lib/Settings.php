@@ -9,16 +9,16 @@ class Settings {
     * Get the redditors that the current user follows.
     */
    public static function getFollowing() {
-      $user = $_COOKIE['user'];
       $db = TwidditDB::db();
+      $userid = User::getUserID();
 
       $query = <<<EOT
          SELECT `redditor`
          FROM `redditors_followed`
-         WHERE `username` = :username
+         WHERE `userid` = :userid
 EOT;
       $statement = $db->prepare($query);
-      $statement->bindParam(':username', $user);
+      $statement->bindParam(':userid', $userid);
       $statement->execute();
       $results = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -34,17 +34,17 @@ EOT;
     * Get the subreddits and their preferences of the current user.
     */
    public static function getSubreddits() {
-      $user = $_COOKIE['user'];
       $db = TwidditDB::db();
+      $userid = User::getUserID();
 
       $query = <<<EOT
          SELECT `subreddit`, `preference_value`
          FROM `subreddits_followed`
-         WHERE `username` = :username
+         WHERE `userid` = :userid
 EOT;
 
       $statement = $db->prepare($query);
-      $statement->bindParam(':username', $user);
+      $statement->bindParam(':userid', $userid);
       $statement->execute();
       $results = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -62,17 +62,17 @@ EOT;
     * Add a redditor to follow for a user.
     */
    public static function addFollowing($redditor) {
-      $user = $_COOKIE['user'];
       $db = TwidditDB::db();
+      $userid = User::getUserID();
 
       $query = <<<EOT
          INSERT INTO `redditors_followed`
-         (`username`, `redditor`)
-         VALUES (:username, :redditor)
+         (`userid`, `redditor`)
+         VALUES (:userid, :redditor)
 EOT;
 
       $statement = $db->prepare($query);
-      $statement->bindParam(':username', $user);
+      $statement->bindParam(':userid', $userid);
       $statement->bindParam(':redditor', $redditor);
       $statement->execute();
    }
@@ -81,17 +81,16 @@ EOT;
     * Add a subreddit for a user.
     */
    public static function addSubreddit($subreddit, $preference = 5) {
-      $user = $_COOKIE['user'];
       $db = TwidditDB::db();
+      $userid = User::getUserID();
 
       $query = <<<EOT
          SELECT * FROM `subreddits_followed`
-         WHERE `username` = :username
+         WHERE `userid` = :userid
           AND `subreddit` = :subreddit
 EOT;
-
       $statement = $db->prepare($query);
-      $statement->bindParam(':username', $user);
+      $statement->bindParam(':userid', $userid);
       $statement->bindParam(':subreddit', $subreddit);
       $statement->execute();
       $results = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -106,11 +105,11 @@ EOT;
       if ($exists == 0) {
          $query = <<<EOT
             INSERT INTO `subreddits_followed`
-            (`username`, `subreddit`, `preference_value`)
-            VALUES (:username, :subreddit, :preferenceValue)
+            (`userid`, `subreddit`, `preference_value`)
+            VALUES (:userid, :subreddit, :preferenceValue)
 EOT;
          $statement = $db->prepare($query);
-         $statement->bindParam(':username', $user);
+         $statement->bindParam(':userid', $userid);
          $statement->bindParam(':subreddit', $subreddit);
          $statement->bindParam(':preferenceValue', $preference);
          $statement->execute();
@@ -120,10 +119,10 @@ EOT;
             UPDATE `subreddits_followed`
             SET `preference_value` = :preferenceValue
             WHERE `subreddit` = :subreddit
-             AND `username` = :username
+             AND `userid` = :userid
 EOT;
          $statement = $db->prepare($query);
-         $statement->bindParam(':username', $user);
+         $statement->bindParam(':userid', $userid);
          $statement->bindParam(':subreddit', $subreddit);
          $statement->bindParam(':preferenceValue', $preference);
          $statement->execute();

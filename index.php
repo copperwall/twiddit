@@ -9,6 +9,7 @@ define('CONFIG_FILE', 'config.json');
 // Our libs
 require_once('Lib/HTTP.php');
 require_once('Lib/TwidditDB.php');
+require_once('Lib/User.php');
 require_once('Lib/Reddit.php');
 require_once('Lib/Settings.php');
 require_once('Lib/View.php');
@@ -22,17 +23,23 @@ if (stristr($_SERVER['REQUEST_URI'], 'public')) {
 $app = new \Slim\Slim();
 
 $app->get('/', function() use ($app) {
-   if(!isset($_COOKIE['user'])) {
+   // Check to see if their session is in the database and has not expired.
+   if (array_key_exists('session', $_COOKIE)
+    && User::isValidSession($_COOKIE['session'])) {
+      $username = User::getUserName();
+      $oauthUrl = Auth::buildOAuthRedirectUrl();
+
+      $mainpage = new View('main.phtml');
+      $mainpage->addPageVariable('oauthUrl', $oauthUrl);
+      $mainpage->addPageVariable('user', $username);
+      $mainpage->render();
+   } else {
       $loginpage = new View('signin.phtml');
       $loginpage->render();
-   } else {
-      $mainpage = new View('main.phtml');
-      $oauthUrl = Auth::buildOAuthRedirectUrl();
-      $mainpage->addPageVariable('oauthUrl', $oauthUrl);
-      $mainpage->addPageVariable('user', $_COOKIE['user']);
-      $mainpage->render();
    }
 });
+
+// TODO Add logout function to remove session from DB and cookies
 
 $app->get('/signin', function()  use ($app) {
    $signinpage = new View('signin.phtml');
@@ -41,23 +48,24 @@ $app->get('/signin', function()  use ($app) {
 
 $app->get('/feed', function() use ($app) {
    $db = TwidditDB::db();
-   $username = $_COOKIE['user'];
+   $userid = User::getUserID();
+
+   if (!$userid) {
+      echo "Error: Invalid User";
+      return;
+   }
+
    $query = <<<EOT
       SELECT `redditor`
       FROM `redditors_followed`
-      WHERE `username` = :username
+      WHERE `userid` = :userid
 EOT;
-
    $statement = $db->prepare($query);
-   $statement->bindParam(':username', $username);
+   $statement->bindParam(':userid', $userid);
    $statement->execute();
-   $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+   $results = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-   $users = [];
-   foreach ($result as $row) {
-      $users[] = $row['redditor'];
-   }
-   
+   $users = array_map(function($row) {return $row['redditor'];} ,$results);
    $comments = Reddit::getComments($users);
 
    echo json_encode($comments);
@@ -65,23 +73,23 @@ EOT;
 
 $app->get('/subreddits', function() use ($app) {
    $db = TwidditDB::db();
-   $username = $_COOKIE['user'];
+   $userid = User::getUserID();
+
    $query = <<<EOT
       SELECT `subreddit`, `preference_value`
       FROM `subreddits_followed`
-      WHERE `username` = :username
+      WHERE `userid` = :userid
 EOT;
-
    $statement = $db->prepare($query);
-   $statement->bindParam(':username', $username);
+   $statement->bindParam(':userid', $userid);
    $statement->execute();
    $results = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-   $posts = [];
-   foreach ($results as $row) {
-      $subredditPosts = Reddit::getSubredditPosts($row['subreddit'], $row['preferenceValue']);
-      $posts = array_merge($posts, $subredditPosts);
-   }
+   $posts = array_reduce($results, function($collector, $row) {
+      $subredditPosts = Reddit::getSubredditPosts($row['subreddit'],
+       $row['preference_value']);
+      return array_merge($collector, $subredditPosts);
+   }, []);
 
    echo json_encode($posts);
 });
@@ -119,15 +127,19 @@ EOT;
    $stmt->execute();
    $result = $stmt->fetch();
 
-   if(!$result) {
+   // No user exists
+   if (!$result) {
       $failMode = 'noUser';
-   } else {
-      if (!password_verify($password, $result['passwordHash'])) {
+   }
+
+   if (!isset($failMode)) {
+      if (!password_verify($password, $result['password_hash'])) {
          $failMode = 'authFailure';
       } else {
-         $cookie_name = 'user';
-         $cookie_value = $username;
-         setcookie($cookie_name, $cookie_value, time() + 36000); // cookie lasts 60 secs
+         // Create new session, assign it to the user, redirect to home.
+         $userid = User::getUserID($username);
+         $sessionid = User::newSession($userid);
+         setcookie('session', $sessionid, time() + 2592000); // 30 days
          $app->redirect('/');
       }
    }
@@ -145,39 +157,30 @@ $app->post('/signup', function() use ($app) {
    $password = $app->request->post('password');
    $hash = password_hash($password, PASSWORD_DEFAULT);
 
+   $userid = User::getUserID($username);
+
+   // Username already exists
+   if ($userid) {
+      $failpage = new View('signin.phtml');
+      $failpage->addPageVariable('userExists', true);
+      $failpage->render();
+      return;
+   }
+
+   // Create new user
    $query = <<<EOT
-      SELECT *
-      FROM `users`
-      WHERE `username` = :username
+      INSERT INTO `users`
+       (`username`, `password_hash`)
+       VALUES (:username, :hash)
 EOT;
    $stmt = $db->prepare($query);
-
    $stmt->bindParam(':username', $username);
+   $stmt->bindParam(':hash', $hash);
    $stmt->execute();
 
-   $result = $stmt->fetchAll();
-
-   if (count($result)) {
-      // Username already exists
-      $failpage = new View('signin.phtml');
-      $failpage->addPageVariable('signupfail', true);
-      $failpage->render();
-   } else {
-      // Create new user
-      $query = <<<EOT
-         INSERT INTO `users`
-          (`username`, `password_hash`)
-          VALUES (:username, :hash)
-EOT;
-      $stmt = $db->prepare($query);
-      $stmt->bindParam(':username', $username);
-      $stmt->bindParam(':hash', $hash);
-      $stmt->execute();
-
-      $successpage = new View('signin.phtml');
-      $successpage->addPageVariable('signupsuccess', true);
-      $successpage->render();
-   }
+   $successpage = new View('signin.phtml');
+   $successpage->addPageVariable('signupsuccess', true);
+   $successpage->render();
 });
 
 // Return a settings object with a following and subreddits array

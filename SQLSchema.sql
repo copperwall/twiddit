@@ -13,7 +13,8 @@ CREATE TABLE `users` (
   `reddit_token` varchar(1000) DEFAULT NULL,
   `reddit_refresh_token` varchar(1000) DEFAULT NULL,
   `expires_in` int(11) DEFAULT NULL,
-  PRIMARY KEY (`userid`)
+  PRIMARY KEY (`userid`),
+  UNIQUE (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
