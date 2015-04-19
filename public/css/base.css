@@ -56,9 +56,13 @@ hr {
 
 #loading_area {
    height:200px;
-   width:400px;
+   max-width:400px;
    margin: 200px auto;
    text-align: center;
+}
+
+#loading_area h3 {
+   font-size: 21px;
 }
 
 .favorite {
