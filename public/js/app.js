@@ -25,9 +25,10 @@ $('#logout').click(function() {
 loadContent('following_tab');
 
 function commentToHTML(post) {
+   var contextURL = post.link_url + post.id + "?context=10000";
    var container = $("<div class='comment_blurb'></div>");
    var favoriteIcon = $("<span class=\"favorite glyphicon glyphicon-star-empty\" aria-hidden=\"true\" data-name=\"" + post.name + "\"></span>");
-   var title = $("<a target=\"_blank\" href='" + post.link_url + "'><h5 class='title'>" + post.link_title + "</h5></a><hr>");
+   var title = $("<a target=\"_blank\" href='" + contextURL + "'><h5 class='title'>" + post.link_title + "</h5></a><hr>");
    var timeSince = $("<span class=\"timestamp text-muted\">" + getTimeSince(post.created_utc) + "</span>");
    var author = $("<span class='author lead'>by " + post.author + "</span>");
    var subreddit = $("<span class='subreddit text-muted'>in r/" + post.subreddit + "</span>");
