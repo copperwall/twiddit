@@ -1,5 +1,18 @@
 // View logic and helper functions for the main view
-var dirtySettings = false;
+var dirtySettings = {
+   following: {
+      dirty: true,
+      endpoint: '/feed'
+   },
+   subreddits: {
+      dirty: true,
+      endpoint: '/subreddits'
+   },
+   settings: {
+      dirty: true,
+      endpoint: '/settings'
+   }
+};
 
 // Name of users that are being followed and name of subreddits being followed
 var users = [], subreddits = [];
@@ -9,43 +22,7 @@ $('#logout').click(function() {
    window.location = '/';
 });
 
-var feedRequest = $.getJSON('/feed');
-var settingsRequest = $.getJSON('/settings');
-var subredditRequest = $.getJSON('/subreddits');
-
-feedRequest.done(function(posts){
-   posts.forEach(function(post) {
-      $('#following_feed .section_body').append(commentToHTML(post));
-   });
-});
-
-subredditRequest.done(function(posts){
-   posts.forEach(function(post) {
-      $('#subreddits_feed .section_body').append(subToHTML(post));
-   });
-});
-
-settingsRequest.done(function(settings){
-   users = settings.following;
-   subreddits = settings.subreddits;
-   
-   users.forEach(function(user) {
-      addFollowUser(user);
-   });
-   subreddits.forEach(function(subreddit) {
-      addSubredditSlider(subreddit);
-   });
-});
-
-// After all three requests finish loading, hide the loading div and show the
-// preferences one.
-$.when.apply($, [feedRequest, subredditRequest, settingsRequest]).done(function() {
-   $('#loading_area').hide();
-   $('#following_feed').show();
-   $('.favorite').click(favorite);
-   $('#message_send').click(sendMessage);
-   $(".view_tab").click(switchView);
-});
+loadContent('following_tab');
 
 function commentToHTML(post) {
    var container = $("<div class='comment_blurb'></div>");
@@ -195,7 +172,7 @@ $("#uButton").click(function() {
       addFollowUser(newUser);
    }
    $("#uSearch").val("");
-   dirtySettings = true;
+   dirtySettings.following.dirty = true;
 });
    
 $("#rButton").click(function() {
@@ -214,7 +191,7 @@ $("#rButton").click(function() {
       }
    }
    $("#rSearch").val("");
-   dirtySettings = true;
+   dirtySettings.subreddits.dirty = true;
 });
 
 /**
@@ -225,20 +202,105 @@ function switchView() {
    var clickedTab = $(this);
    var selectedView = clickedTab.attr('data-viewid');
 
-   if (dirtySettings) {
+   var isDirty = Object.keys(dirtySettings).reduce(function(prev, current) {
+      if (dirtySettings[current].dirty)
+         return true;
+      return prev;
+   }, false);
+
+   if (isDirty) {
       // reload settings
-      window.location = '/';
+      loadContent(clickedTab.attr('id'));
+   } else {
+      clickedTab.addClass('active');
+      $("#" + selectedView).show();
+
+      // Hide all other views and make all other tabs inactive
+      $(".view_tab").each(function (index, navButton) {
+         if ($(navButton).attr('id') != clickedTab.attr('id')) {
+            var viewPane = $(navButton).attr('data-viewid');
+            $(navButton).removeClass('active');
+            $("#" + viewPane).hide();
+         }
+      })
    }
+}
 
-   clickedTab.addClass('active');
-   $("#" + selectedView).show();
+// Show the loading image
+// empty subreddit and following content containers (this could be on a per
+//    setting basis)
+// Fire off requests for each dirty setting category
+// Once all requests have finished remove the loading image
+function loadContent(viewTab) {
+   $('#loading_area').show();
+   $('#following_feed').hide();
 
-   // Hide all other views and make all other tabs inactive
-   $(".view_tab").each(function (index, navButton) {
-      if ($(navButton).attr('id') != clickedTab.attr('id')) {
-         var viewPane = $(navButton).attr('data-viewid');
-         $(navButton).removeClass('active');
-         $("#" + viewPane).hide();
+   // filter out non dirty settings
+   var settings = Object.keys(dirtySettings).filter(function(type) {
+      return dirtySettings[type].dirty;
+   }, []);
+
+   // settings is now an array of ['following', 'subreddits', 'settings']
+   // empty the dirty settings areas
+   // start requests
+   var requests = settings.map(function(setting) {
+      var currentSetting = dirtySettings[setting];
+
+      if (setting !== 'settings') {
+         var contentSelector = '#' + setting + '_feed .section_body';
+         $(contentSelector).html('');
       }
-   })
+
+      var request = $.getJSON(currentSetting.endpoint);
+
+      if (setting === 'following') {
+         request.done(followingDone);
+      } else if (setting === 'subreddits') {
+         request.done(subredditsDone);
+      } else if (setting === 'settings') {
+         request.done(settingsDone);
+      }
+
+      return request;
+   });
+
+   // After all three requests finish loading, hide the loading div and show the
+   // preferences one.
+   $.when.apply($, requests).done(function() {
+      $('#loading_area').hide();
+      $('.favorite').click(favorite);
+      $('#message_send').click(sendMessage);
+      $(".view_tab").click(switchView);
+
+      // Clear all dirty settings
+      dirtySettings.following.dirty = false;
+      dirtySettings.subreddits.dirty = false;
+      dirtySettings.settings.dirty = false;
+
+      $('#' + viewTab).trigger('click');
+   });
+}
+
+function followingDone(posts) {
+   posts.forEach(function(post) {
+      $('#following_feed .section_body').append(commentToHTML(post));
+   });
+}
+
+function subredditsDone(posts) {
+   posts.forEach(function(post) {
+      $('#subreddits_feed .section_body').append(subToHTML(post));
+   });
+}
+
+function settingsDone(settings) {
+   users = settings.following;
+   subreddits = settings.subreddits;
+
+   users.forEach(function(user) {
+      addFollowUser(user);
+   });
+   subreddits.forEach(function(subreddit) {
+      addSubredditSlider(subreddit);
+   });
 }
