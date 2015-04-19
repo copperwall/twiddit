@@ -153,11 +153,19 @@ EOT;
 
 $app->post('/signup', function() use ($app) {
    $db = TwidditDB::db();
-   $username = $app->request->post('username');
-   $password = $app->request->post('password');
+   $username = trim($app->request->post('username'));
+   $password = trim($app->request->post('password'));
    $hash = password_hash($password, PASSWORD_DEFAULT);
 
    $userid = User::getUserID($username);
+
+   // Empty username
+   if (empty($username)) {
+      $failpage = new View('signin.phtml');
+      $failpage->addPageVariable('badName', true);
+      $failpage->render();
+      return;
+   }
 
    // Username already exists
    if ($userid) {

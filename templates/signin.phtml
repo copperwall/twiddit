@@ -21,6 +21,9 @@
       <?php if (isset($noUser)): ?>
          <p class='bg-danger'>This user doesn't exist, please sign up</p>
       <?php endif; ?>
+      <?php if (isset($badName)): ?>
+         <p class='bg-danger'>Your username is not allowed. Please choose one that isn't only whitespace.</p>
+      <?php endif; ?>
       <?php if (isset($authFailure)): ?>
          <p class='bg-danger'>Invalid Username or Password</p>
       <?php endif; ?>
