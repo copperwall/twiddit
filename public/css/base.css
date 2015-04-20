@@ -7,6 +7,16 @@
    box-shadow: 1px 1px 0.5px grey, 0px -0.5px 0.5px grey;
 }
 
+#twiddit-logo {
+   height: 35px;
+   width: 35px;
+   margin-top: -7px;
+}
+
+#twiddit-title {
+   font-size: 24px;
+}
+
 .author {
    padding-right: 10px;
 }
