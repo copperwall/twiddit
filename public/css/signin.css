@@ -11,6 +11,10 @@
       color: #AAAAAA;
   }
 
+  #twiddit-logo-large {
+     width: 100px;
+  }
+
   .btn 
   {
    outline:0;
@@ -42,7 +46,7 @@
   }
   .form-signin .form-signin-heading, .form-signin {
     margin-bottom: 10px;
-    align: center
+    text-align: center
   }
   .form-signin .form-control {
     position: relative;
