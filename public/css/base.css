@@ -93,3 +93,16 @@ hr {
    width: 400px;
    height: 100px;
 }
+
+.preference-body {
+   margin-bottom: 20px;
+}
+
+.form-search input {
+   height: 34px;
+   float: left;
+}
+
+.form-search button {
+   margin-left: 20px;
+}

@@ -59,24 +59,26 @@
    <div id='preferences_page' class="container">
       <div class="row">
          <div class="col-lg-12">
-            <div style="width:275px;">
-                <h1>Preferences</h1>
-                <h3>People You Follow</h3>
-                <ul id="following" style="list-style: none; text-align: left; margin:0 auto"></ul>
-             </div>
-            <form class="form-search">
-               <input id="uSearch" type="text" class="input-medium" placeholder="Follow someone new">
-               <button id="uButton" class="btn">Follow</button>
-            </form></br>
-            <h3>Subreddits You Follow</h3>
-            <div id="subreddits" style="width:250px;"></div>
-            <form class="form-search">
-               <input id="rSearch" type="text" class="input-medium" placeholder="Follow a new subreddit">
-               <button id="rButton" class="btn">Follow</button>
-            </form>
-            <h3>Login with Reddit</h3>
-            <p>This allows you to favorite posts and send private messages to other redditors</p>
-            <a href='<?= $oauthUrl ?>'><button type="button" class="btn btn-primary">Connect to Reddit</button></a>
+            <h1>Preferences</h1>
+            <div class="container-fluid">
+               <div id="following-prefs" class="preference-body" style="width:275px;">
+                   <h3>People You Follow</h3>
+                   <ul id="following" class="list-unstyled"></ul>
+               </div>
+               <form class="form-search">
+                  <input id="uSearch" type="text" class="input-medium" placeholder="Follow someone new">
+                  <button id="uButton" class="btn">Follow</button>
+               </form>
+               <h3>Subreddits You Follow</h3>
+               <div id="subreddit-prefs" class="preference-body" "style="width:250px;"></div>
+               <form class="form-search">
+                  <input id="rSearch" type="text" class="input-medium" placeholder="Follow a new subreddit">
+                  <button id="rButton" class="btn">Follow</button>
+               </form>
+               <h3>Login with Reddit</h3>
+               <p>This allows you to favorite posts and send private messages to other redditors</p>
+               <a href='<?= $oauthUrl ?>'><button type="button" class="btn btn-primary">Connect to Reddit</button></a>
+            </div>
         </div>
       </div><!-- /.row -->
    </div>
