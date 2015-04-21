@@ -70,7 +70,7 @@ function addSubredditSlider(subreddit) {
                             .attr("value", subreddit.preferenceValue) // get from database
                             .attr("min", min)
                             .attr("max", max);
-   $("#subreddits").append("<label>r/" + subredditName + "</label>")
+   $("#subreddit-prefs").append("<label>r/" + subredditName + "</label>")
                    .append(slider);
 
    slider.on("mouseup", function () {
