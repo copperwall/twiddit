@@ -25,7 +25,7 @@ $('#logout').click(function() {
 loadContent('following_tab');
 
 function commentToHTML(post) {
-   var contextURL = post.link_url + post.id + "?context=10000";
+   var contextURL = genContextURL(post);
    var container = $("<div class='comment_blurb'></div>");
    var favoriteIcon = $("<span class=\"favorite glyphicon glyphicon-star-empty\" aria-hidden=\"true\" data-name=\"" + post.name + "\"></span>");
    var title = $("<a target=\"_blank\" href='" + contextURL + "'><h5 class='title'>" + post.link_title + "</h5></a><hr>");
@@ -160,6 +160,26 @@ function getTimeSince(date) {
    var minutes = Math.floor(timeSince / 60);
 
    return minutes + " minutes ago";
+}
+
+function genContextURL(post) {
+   var postid = getLinkId(post.link_id);
+   var parentid = getLinkId(post.parent_id);
+   return 'https://reddit.com/r/' + post.subreddit + '/comments/'
+    + postid + '/asdf/' + parentid;
+}
+
+/**
+ * Strips the "t3_" prefix from post ids.
+ */
+function getLinkId(parentid) {
+   var matches = /^t[0-9]_(.*)$/.exec(parentid);
+
+   if (matches) {
+      return matches[1];
+   }
+
+   console.error('Parentid: ' + parentid + ' is invalid');
 }
 
 $("#uButton").click(function() {
