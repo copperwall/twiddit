@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This could be an Auth library for storing, doing Oauth stuff, handling 
+ * This could be an Auth library for storing, doing Oauth stuff, handling
  * secrets.
  */
 
@@ -26,7 +26,7 @@ class Auth {
       ];
 
       $url = 'https://ssl.reddit.com/api/v1/authorize?';
-      $url .= implode('&', $params); 
+      $url .= implode('&', $params);
 
       return $url;
    }
@@ -47,13 +47,13 @@ class Auth {
    }
 
    /**
-    * This should be used when an existing user authenticates their reddit 
+    * This should be used when an existing user authenticates their reddit
     * account.
     *
     * Should add some row that relates to our "user" and their secret.
     */
    public static function setUserToken($token, $refreshToken, $expires_in) {
-      // Need to update the token and the refresh token in the database of said 
+      // Need to update the token and the refresh token in the database of said
       // user.
       $db = TwidditDB::db();
       $userid = User::getUserID();
@@ -83,7 +83,7 @@ EOT;
       $db = TwidditDB::db();
       $userid = User::getUserID();
 
-      // If the token has expired, grab a new one with the refresh token and 
+      // If the token has expired, grab a new one with the refresh token and
       // then reset the token, refresh token, and expiration time.
       if (self::hasExpired()) {
          $authResponse = self::refreshAuthToken();

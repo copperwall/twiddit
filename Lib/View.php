@@ -3,7 +3,7 @@
 /**
  * View object
  *
- * This allows you to create a view from a template file and add variables to 
+ * This allows you to create a view from a template file and add variables to
  * use in the template.
  */
 class View {

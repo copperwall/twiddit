@@ -8,14 +8,14 @@ define('BASE_URL', 'http://reddit.com');
 class Reddit {
    /**
     * Grab the $limit hottest posts from $subreddit.
-    * 
+    *
     * @param $subreddits - An array of subreddit names.
     * @param $limit (optional) - The number of posts to grab.
     */
    public static function getSubredditPosts($subreddit, $limit = 5) {
       return self::getItems([$subreddit], $limit, 'subreddit');
    }
-   
+
    /**
     * Grab the most recent $limit comments from $users.
     *

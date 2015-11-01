@@ -195,7 +195,7 @@ $("#uButton").click(function() {
    $("#uSearch").val("");
    dirtySettings.following.dirty = true;
 });
-   
+
 $("#rButton").click(function() {
    var newSubreddit = $("#rSearch").val(), alreadyAdded = false;
    for (i=0; i < subreddits.length && !alreadyAdded; i++) {
