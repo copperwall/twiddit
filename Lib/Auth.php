@@ -5,27 +5,22 @@
  * secrets.
  */
 
-define('CLIENT_ID', 'cfRh9fLgIRPyDg');
-// NOTE Don't commit this, copy it from the config file
-define('CLIENT_SECRET', '');
-
 class Auth {
-
    // Auth scopes that we need
    private static $scopes = ['save', 'privatemessages'];
-   private static $redirect_uri = 'http://devopps.me:2000/reddit_callback';
 
    /**
     * Build the Reddit OAuth link using our ClientID, Redirect URI and permissions.
     */
    public static function buildOAuthRedirectUrl() {
+      $config = self::getCredentials();
       $scopes = implode(',', self::$scopes);
       $state = 'basic';
       $params = [
-         'client_id=' . CLIENT_ID,
+         "client_id={$config['client_id']}",
          "response_type=code",
          "state=$state",
-         "redirect_uri=" . urlencode(self::$redirect_uri),
+         "redirect_uri=" . urlencode($config['redirect_uri']),
          "duration=permanent",
          "scope=$scopes"
       ];
@@ -39,9 +34,11 @@ class Auth {
    public static function getTokenFromAuthCode($code, $state) {
       $url = 'https://www.reddit.com/api/v1/access_token';
       $headers = [
-         'Authorization' => 'Basic ' . base64_encode(CLIENT_ID . ':' . CLIENT_SECRET),
+         'Authorization' => 'Basic '
+          . base64_encode("{$config['client_id']}:{$config['client_secret']}"),
       ];
-      $body = "grant_type=authorization_code&code=$code&redirect_uri=". self::$redirect_uri;
+      $body = "grant_type=authorization_code&code=$code&redirect_uri="
+       . $config['redirect_uri'];
 
       $JSONResponse = HTTP::post($url, $body, $headers);
       $response = json_decode($JSONResponse, /* assoc */ true);
@@ -153,11 +150,13 @@ EOT;
     * the current refresh token.
     */
    private static function refreshAuthToken() {
+      $config = self::getCredentials();
       $refreshToken = self::getRefreshToken();
 
       $url = 'https://www.reddit.com/api/v1/access_token';
       $headers = [
-         'Authorization' => 'Basic ' . base64_encode(CLIENT_ID . ':' . CLIENT_SECRET),
+         'Authorization' => 'Basic '
+          . base64_encode("{$config['client_id']}:{$config['client_secret']}"),
       ];
       $body = "grant_type=refresh_token&refresh_token=$refreshToken";
 
@@ -166,5 +165,15 @@ EOT;
       $response['refresh_token'] = $refreshToken;
 
       return $response;
+   }
+
+   /**
+    * Get oauth credentials from config.json.
+    */
+   private static function getCredentials() {
+      $JSONConfig = file_get_contents(CONFIG_FILE);
+      $config = json_decode($JSONConfig, /* assoc */ true);
+
+      return $config['oauth'];
    }
 }
