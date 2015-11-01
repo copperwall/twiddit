@@ -22,12 +22,9 @@ EOT;
       $statement->execute();
       $results = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-      // TODO Make this an array_map
-      $redditors = [];
-      foreach ($results as $row) {
-         $redditors[] = $row['redditor'];
-      }
-      return $redditors;
+      return array_map(function($row) {
+         return $row['redditor'];
+      }, $results);
    }
 
    /**
@@ -48,14 +45,12 @@ EOT;
       $statement->execute();
       $results = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-      $subreddits = [];
-      foreach ($results as $row) {
-         $subreddits[] = [
+      return array_map(function($row) {
+         return [
             'subreddit' => $row['subreddit'],
             'preferenceValue' => $row['preference_value']
          ];
-      }
-      return $subreddits;
+      }, $results);
    }
 
    /**
@@ -95,14 +90,7 @@ EOT;
       $statement->execute();
       $results = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-      // What even?
-      // TODO Replace a count check or something
-      $exists = 0;
-      foreach($results as $row) {
-          $exists = 1;
-      } 
-
-      if ($exists == 0) {
+      if (!count($results)) {
          $query = <<<EOT
             INSERT INTO `subreddits_followed`
             (`userid`, `subreddit`, `preference_value`)
@@ -113,8 +101,7 @@ EOT;
          $statement->bindParam(':subreddit', $subreddit);
          $statement->bindParam(':preferenceValue', $preference);
          $statement->execute();
-      }
-      else { 
+      } else {
          $query = <<<EOT
             UPDATE `subreddits_followed`
             SET `preference_value` = :preferenceValue
